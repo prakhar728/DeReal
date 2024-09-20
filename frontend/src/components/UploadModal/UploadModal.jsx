@@ -38,7 +38,7 @@ const UploadPhotoModal = ({ isOpen, onClose }) => {
     let json = {};
     for (let [index, value] of capturedImages.entries()) {
       if (value) {
-        let cid = await uploadJSONToIPFS(value);
+        let cid = await uploadJSONToIPFS(value.split(",")[1]);
         json[index] = cid.IpfsHash;
       }
     }

@@ -1,15 +1,13 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 
-import './index.css';
-import reportWebVitals from './reportWebVitals';
+import "./index.css";
+import reportWebVitals from "./reportWebVitals";
 import HomePage from "./pages/HomePage/HomePage";
-import App from "./pages/App/App"
-
+import App from "./pages/App/App";
+import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
 
 const router = createBrowserRouter([
   {
@@ -18,14 +16,22 @@ const router = createBrowserRouter([
   },
   {
     path: "/app",
-    element: <App />
-  }
+    element: <App />,
+  },
 ]);
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <DynamicContextProvider
+      settings={{
+        // Find your environment id at https://app.dynamic.xyz/dashboard/developer
+        environmentId: process.env.REACT_APP_DYNAMIC_ENVIRONMENT_ID,
+        walletConnectors: [EthereumWalletConnectors],
+      }}
+    >
+      <RouterProvider router={router} />
+    </DynamicContextProvider>
   </React.StrictMode>
 );
 

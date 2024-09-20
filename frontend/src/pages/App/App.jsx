@@ -1,29 +1,42 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
 import {
-  DynamicContextProvider,
   DynamicWidget,
 } from "@dynamic-labs/sdk-react-core";
-import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import rightarrow from "../../assets/8-bit-right-arrow.gif";
-import Main from "../../Main.js";
 import UploadPhotoModal from "../../components/UploadModal/UploadModal.jsx";
+import ProfileUpdateModal from "../../components/ProfileUpdateModal/ProfileUploadModal.jsx";
+import { useBiconomyAccount } from "../../useBiconomyAccount.js";
 
 function App() {
-  const [smartAccount, setSmartAccount] = useState(null);
+  const { smartAccount } = useBiconomyAccount();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [walletAddress, setwalletAddress] = useState("");
+
+  useEffect(() => {
+    async function walletPopulate() {
+      setwalletAddress(await smartAccount.getAccountAddress());
+    }    
+
+    if(smartAccount)
+      walletPopulate();
+
+  }, [smartAccount])
+  
+
+  const handleUpdate = async () => {
+    console.log("Updating profile");
+  };
 
   return (
     <div className="App">
-      <DynamicContextProvider
-        settings={{
-          // Find your environment id at https://app.dynamic.xyz/dashboard/developer
-          environmentId: process.env.REACT_APP_DYNAMIC_ENVIRONMENT_ID,
-          walletConnectors: [EthereumWalletConnectors],
-        }}
-      >
-        <DynamicWidget />
+
+        <header className="grid items-center justify-items-end">
+          <div className="grid items-center justify-items-end">
+            <DynamicWidget />
+          </div>
+        </header>
 
         <div className="cta-section">
           <h2>Ready for spontaneous sharing?</h2>
@@ -32,12 +45,17 @@ function App() {
             <img src={rightarrow} alt="right-arrow" className="right-arrow" />
           </button>
         </div>
-        <Main smartAccount={smartAccount} setSmartAccount={setSmartAccount} />
         <UploadPhotoModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
         />
-      </DynamicContextProvider>
+
+      {walletAddress && (
+        <ProfileUpdateModal
+          walletAddress={walletAddress}
+          onUpdate={handleUpdate}
+        />
+      )}
     </div>
   );
 }
