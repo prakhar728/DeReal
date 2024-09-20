@@ -11,7 +11,6 @@ import rightarrow from "../../assets/8-bit-right-arrow.gif";
 import pyth from "../../assets/techs/pyth.png";
 import dynamic from "../../assets/techs/dynamic.png";
 import solidity from "../../assets/techs/solidity.png";
-// import backgroundGif from "./assets/background.gif"; // Import your background GIF
 
 const HomePage = () => {
   const [userCount, setUserCount] = useState(0);
