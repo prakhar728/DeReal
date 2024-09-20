@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import "./HomePage.css";
 import clock from "../../assets/pixel-art-clock.gif";
 import onchain from "../../assets/8-bit-on-chain.png";
@@ -13,6 +15,8 @@ import solidity from "../../assets/techs/solidity.png";
 
 const HomePage = () => {
   const [userCount, setUserCount] = useState(0);
+  const navigate = useNavigate();
+
   const features = [
     { name: "Random Time Event Scheduling", image: clock },
     { name: "On-Chain Randomness", image: onchain },
@@ -48,7 +52,7 @@ const HomePage = () => {
           </header>
           <div className="cta-section">
             <h2>Ready for spontaneous sharing?</h2>
-            <button className="cta-button">
+            <button className="cta-button" onClick={(e) => navigate('/app')}>
               Go to App
               <img src={rightarrow} alt="right-arrow" className="right-arrow" />
             </button>
