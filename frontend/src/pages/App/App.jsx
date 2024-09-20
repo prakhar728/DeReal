@@ -6,7 +6,7 @@ import {
   DynamicWidget,
 } from "@dynamic-labs/sdk-react-core";
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
-import Main from "./Main.js";
+import Main from "../../Main.js";
 
 function App() {
   const [smartAccount, setSmartAccount] = useState(null);

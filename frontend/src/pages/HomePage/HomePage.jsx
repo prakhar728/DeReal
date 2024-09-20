@@ -1,17 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./HomePage.css";
-import clock from "./assets/pixel-art-clock.gif";
-import onchain from "./assets/8-bit-on-chain.png";
-import nobot from "./assets/8-bit-no-bot.png";
-import tokengated from "./assets/8-bit-token-gated.png";
-import moderation from "./assets/8-bit-ai-moderation.webp";
-import rightarrow from "./assets/8-bit-right-arrow.gif";
-import pyth from "./assets/techs/pyth.png";
-import dynamic from "./assets/techs/dynamic.png";
-import solidity from "./assets/techs/solidity.png";
-import backgroundGif from "./assets/background.gif"; // Import your background GIF
+import clock from "../../assets/pixel-art-clock.gif";
+import onchain from "../../assets/8-bit-on-chain.png";
+import nobot from "../../assets/8-bit-no-bot.png";
+import tokengated from "../../assets/8-bit-token-gated.png";
+import moderation from "../../assets/8-bit-ai-moderation.webp";
+import rightarrow from "../../assets/8-bit-right-arrow.gif";
+import pyth from "../../assets/techs/pyth.png";
+import dynamic from "../../assets/techs/dynamic.png";
+import solidity from "../../assets/techs/solidity.png";
+// import backgroundGif from "./assets/background.gif"; // Import your background GIF
 
 const HomePage = () => {
+  const [userCount, setUserCount] = useState(0);
   const features = [
     { name: "Random Time Event Scheduling", image: clock },
     { name: "On-Chain Randomness", image: onchain },
@@ -24,13 +25,25 @@ const HomePage = () => {
     { name: "Pyth Network", logo: pyth },
     { name: "Dynamic SDK", logo: dynamic },
   ];
+
+  useEffect(() => {
+    const fetchUserCount = () => {
+      setTimeout(() => {
+        const count = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000;
+        setUserCount(count);
+      }, 1000);
+    };
+
+    fetchUserCount();
+  }, []);
+
   return (
     <div className="home-page">
       <div className="background-gif"></div>
       <div className="content">
         <section className="section landing">
           <header className="header">
-            <h1>BeReal-like Decentralized App</h1>
+            <h1>DeReal</h1>
             <p>Share spontaneous moments, triggered by smart contracts</p>
           </header>
           <div className="cta-section">
@@ -39,6 +52,9 @@ const HomePage = () => {
               Go to App
               <img src={rightarrow} alt="right-arrow" className="right-arrow" />
             </button>
+            <div className="user-count">
+              Users Berealed: {userCount.toLocaleString()}
+            </div>
           </div>
         </section>
         <section className="section features">
