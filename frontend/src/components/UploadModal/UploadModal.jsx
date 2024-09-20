@@ -3,6 +3,7 @@ import Webcam from "react-webcam";
 import { FaCamera } from "react-icons/fa";
 
 import "./UploadModal.css";
+import { uploadJSONToIPFS } from "../../Ipfs";
 
 const UploadPhotoModal = ({ isOpen, onClose }) => {
   const [caption, setCaption] = useState("");
@@ -24,7 +25,7 @@ const UploadPhotoModal = ({ isOpen, onClose }) => {
 
     // Capture from the back camera
     setFacingMode("environment");
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for the camera to switch
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     imageSrc = webcamRef.current.getScreenshot();
     images.push(imageSrc);
 
@@ -32,11 +33,22 @@ const UploadPhotoModal = ({ isOpen, onClose }) => {
     setCapturing(false);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you would typically send the photo, caption, and hashtags to your backend
-    console.log("Submitting:", { capturedImages, caption, hashtags });
-    // Reset form and close modal
+    let json = {};
+    for (let [index, value] of capturedImages.entries()) {
+      if (value) {
+        let cid = await uploadJSONToIPFS(value);
+        json[index] = cid.IpfsHash;
+      }
+    }
+    json["caption"] = caption;
+    json["hashtags"] = hashtags.split(',');
+
+
+    let cid = await uploadJSONToIPFS(json);
+    console.log(cid);
+    
     setCapturedImages([]);
     setCaption("");
     setHashtags("");
