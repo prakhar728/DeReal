@@ -40,16 +40,16 @@ contract DeReal {
     }
 
     // Register a new user with an optional bio
-    function registerUser(string memory _bio) public {
+    function registerUser(string memory _bio, address _user) public {
         require(!users[msg.sender].exists, "User already exists");
-        users[msg.sender] = User({
+        users[_user] = User({
             bio: _bio,
             likes: 0,
             interactions: new uint256[](0) ,
             exists: true
         });
 
-        emit UserRegistered(msg.sender);
+        emit UserRegistered(_user);
     }
 
     // Get user details for the caller
@@ -61,6 +61,10 @@ contract DeReal {
     // Update the bio of the user
     function updateBio(string memory _bio) public userExists {
         users[msg.sender].bio = _bio;
+    }
+
+    function viewBio(address _address) public view returns (string memory) {
+        return users[_address].bio;
     }
 
     // Post an interaction with content stored on IPFS (content link)

@@ -55,10 +55,6 @@ const UploadPhotoModal = ({ isOpen, onClose }) => {
     onClose();
   };
 
-  useEffect(() => {
-    console.log(capturedImages);
-  }, [capturedImages])
-  
   if (!isOpen) return null;
 
   return (

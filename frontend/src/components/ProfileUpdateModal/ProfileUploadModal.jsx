@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { FaTimes } from 'react-icons/fa';
 
-const ProfileUpdateModal = ({ walletAddress, onUpdate }) => {
-  const [bio, setBio] = useState('');
+const ProfileUpdateModal = ({ walletAddress, onUpdate, userBio, onClose }) => {
+  const [bio, setBio] = useState(userBio);
   const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState('');
   const [profileImage, setProfileImage] = useState('');
@@ -37,7 +38,14 @@ const ProfileUpdateModal = ({ walletAddress, onUpdate }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-gray-800 p-8 rounded-lg w-96">
+      <div className="bg-gray-800 p-8 rounded-lg w-96 relative">
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-2 text-gray-400 hover:text-white transition duration-300 p-0"
+          aria-label="Close"
+        >
+          <FaTimes size={24} />
+        </button>
         <h2 className="text-2xl font-bold mb-4 text-white">Update Profile</h2>
         <div className="flex justify-center mb-6">
           <img 
@@ -58,7 +66,7 @@ const ProfileUpdateModal = ({ walletAddress, onUpdate }) => {
             onChange={handleBioChange}
             placeholder="Tell us about yourself..."
           />
-          <p className="text-sm text-gray-400 mt-1">{bio.length}/100 characters</p>
+          {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
         </div>
         <button
           className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 flex items-center justify-center"

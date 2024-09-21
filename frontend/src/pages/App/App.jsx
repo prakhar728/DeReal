@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { DynamicWidget, useDynamicContext } from "@dynamic-labs/sdk-react-core";
-import { getWeb3Provider, getSigner } from "@dynamic-labs/ethers-v6";
+import { getSigner } from "@dynamic-labs/ethers-v6";
+import { FaUserCircle } from "react-icons/fa"; // Import profile icon from React Icons
+import { encodeFunctionData } from "viem";
 
 import "./App.css";
-
 import rightarrow from "../../assets/8-bit-right-arrow.gif";
 import UploadPhotoModal from "../../components/UploadModal/UploadModal.jsx";
 import ProfileUpdateModal from "../../components/ProfileUpdateModal/ProfileUploadModal.jsx";
@@ -13,12 +14,14 @@ import PostCard from "../../components/PostCard/PostCard.jsx";
 import SponsoredPostCard from "../../components/SponsoredCard/SponsoredCard.jsx";
 import dummy from "../../assets/dummy-image.jpg";
 import ContractData from "../../assets/contracts/DeReal.json";
+import { PaymasterMode } from "@biconomy/account";
 
 function App() {
   const { smartAccount } = useBiconomyAccount();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [walletAddress, setwalletAddress] = useState("");
   const [contract, setcontract] = useState();
+  const [userBio, setuserBio] = useState();
   const { primaryWallet } = useDynamicContext();
 
   const contractAddress = process.env.REACT_APP_DEPLOYED_CONTRACT;
@@ -35,35 +38,79 @@ function App() {
   }, [smartAccount]);
 
   useEffect(() => {
-    async function fetchContract() {
-      let c;
+    let c;
+    async function me() {
+      const signer = await getSigner(primaryWallet);
+      c = new ethers.Contract(contractAddress, ContractData.abi, signer);
+      setcontract(c);
       try {
-        if (contract) return;
+        console.log(c);
 
-        const signer = await getSigner(primaryWallet);
-
-        console.log("here");
-
-        c = new ethers.Contract(contractAddress, ContractData.abi, signer);
-        setcontract(c);
-        await c.getUser();
+        let u = await c.viewBio(await smartAccount.getAccountAddress());
+        if (u) {
+          setuserBio(u);
+        }
       } catch (error) {
-        if (error.code == "CALL_EXCEPTION") {
-          let tx = await c.registerUser("");
-          await tx;
-          setshowProfileModal(false);
+        console.log(error);
+        // Assuming you have already imported the ABI and necessary setup
+
+        console.log(primaryWallet);
+
+        try {
+          const transactionData = encodeFunctionData({
+            abi: ContractData.abi, // ABI of the contract
+            functionName: "registerUser", // Name of the function you're calling
+            args: ["Initial bio", await smartAccount.getAccountAddress()], // Arguments for the function
+          });
+
+          // Build the transaction object
+          const tx = {
+            to: contractAddress, // The contract address you're interacting with
+            data: transactionData, // The encoded function data
+          };
+
+          const userOpResponse = await smartAccount.sendTransaction(tx, {
+            paymasterServiceData: { mode: PaymasterMode.SPONSORED },
+          });
+
+          const { transactionHash } = await userOpResponse.waitForTxHash();
+
+          await userOpResponse.wait();
+        } catch (error) {
+          console.log(error);
         }
       }
     }
 
-    if (primaryWallet) {
-      fetchContract();
-    }
-  }, [primaryWallet]);
+    if (smartAccount && smartAccount.signer) me();
+  }, [smartAccount]);
 
   const handleUpdate = async (bio) => {
     try {
-      console.log("Updating profile");
+      // Assuming you have already imported the ABI and necessary setup
+      const transactionData = encodeFunctionData({
+        abi: ContractData.abi, // ABI of the contract
+        functionName: "updateBio", // Name of the function you're calling
+        args: [bio], // Arguments for the function
+      });
+
+      // Build the transaction object
+      const tx = {
+        to: contractAddress, // The contract address you're interacting with
+        data: transactionData, // The encoded function data
+      };
+      const userOpResponse = await smartAccount.sendTransaction(tx, {
+        paymasterServiceData: { mode: PaymasterMode.SPONSORED },
+      });
+
+      const { transactionHash } = await userOpResponse.waitForTxHash();
+
+      console.log("Transaction Hash", transactionHash);
+      const userOpReceipt = await userOpResponse.wait();
+      if (userOpReceipt.success == "true") {
+        console.log("UserOp receipt", userOpReceipt);
+        console.log("Transaction receipt", userOpReceipt.receipt);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -81,20 +128,12 @@ function App() {
     {
       id: 2,
       image: dummy,
-      caption: "Retro gaming night",
-      likes: 28,
+      caption: "Exploring the pixel world!",
+      likes: 42,
       userPfp: dummy,
       userAddress: "0x12312321313134555",
     },
-    {
-      id: 3,
-      image: dummy,
-      caption: "8-bit art creation in progress",
-      likes: 35,
-      userPfp: dummy,
-      userAddress: "0x12312321313134555",
-    },
-    // Add more posts as needed
+    // More posts...
   ];
 
   const sponsoredPosts = [
@@ -110,22 +149,13 @@ function App() {
     {
       id: "s2",
       image: dummy,
-      caption: "Retro-style energy drinks now available!",
-      likes: 30,
-      sponsorLink: "https://example.com/sponsored-drink",
+      caption: "Check out our new 8-bit inspired game!",
+      likes: 45,
+      sponsorLink: "https://example.com/sponsored-game1",
       userPfp: dummy,
       userAddress: "0x12312321313134555",
     },
-    {
-      id: "s3",
-      image: dummy,
-      caption: "Join our pixel art workshop this weekend",
-      likes: 55,
-      sponsorLink: "https://example.com/pixel-art-workshop",
-      userPfp: dummy,
-      userAddress: "0x12312321313134555",
-    },
-    // Add more sponsored posts as needed
+    // More sponsored posts...
   ];
 
   const getRandomSponsoredPost = () => {
@@ -139,13 +169,11 @@ function App() {
     let sponsoredIndex = 0;
 
     while (regularIndex < regularPosts.length) {
-      // Add two regular posts
       result.push(regularPosts[regularIndex++]);
       if (regularIndex < regularPosts.length) {
         result.push(regularPosts[regularIndex++]);
       }
 
-      // Add one sponsored post if available
       if (sponsoredIndex < sponsoredPosts.length) {
         result.push(getRandomSponsoredPost());
         sponsoredIndex++;
@@ -160,7 +188,14 @@ function App() {
   return (
     <div className="App">
       <header className="grid items-center justify-items-end">
-        <div className="grid items-center justify-items-end">
+        <div className="flex items-center justify-items-end">
+          {/* Profile Icon */}
+          <div
+            className="profile-icon-container"
+            onClick={() => setshowProfileModal(true)}
+          >
+            <FaUserCircle size={30} style={{ cursor: "pointer" }} />
+          </div>
           <DynamicWidget />
         </div>
       </header>
@@ -172,15 +207,19 @@ function App() {
           <img src={rightarrow} alt="right-arrow" className="right-arrow" />
         </button>
       </div>
+
       <UploadPhotoModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
 
+      {/* Profile Update Modal */}
       {showProfileModal && (
         <ProfileUpdateModal
           walletAddress={walletAddress}
           onUpdate={handleUpdate}
+          userBio={userBio}
+          onClose={() => setshowProfileModal(false)}
         />
       )}
 
