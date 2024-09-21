@@ -3,7 +3,7 @@ require("@nomicfoundation/hardhat-ignition");
 require("dotenv").config(); // Load environment variables
 
 module.exports = {
-  solidity: "0.8.0",
+  solidity: "0.8.17",
   networks: {
     sepolia: {
       url: process.env.SEPOLIA_RPC_URL, // Sepolia RPC URL from .env
@@ -16,5 +16,11 @@ module.exports = {
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY // Etherscan API key from .env
-  }
+  },
+  paths: {
+    sources: "./contracts",
+    tests: "./test",
+    cache: "./cache",
+    artifacts: "./artifacts"
+  },
 };

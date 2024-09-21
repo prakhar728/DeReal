@@ -6,7 +6,6 @@ import { FaUserCircle } from "react-icons/fa"; // Import profile icon from React
 import { encodeFunctionData } from "viem";
 
 import "./App.css";
-import rightarrow from "../../assets/8-bit-right-arrow.gif";
 import UploadPhotoModal from "../../components/UploadModal/UploadModal.jsx";
 import ProfileUpdateModal from "../../components/ProfileUpdateModal/ProfileUploadModal.jsx";
 import { useBiconomyAccount } from "../../useBiconomyAccount.js";
@@ -141,7 +140,7 @@ function App() {
         paymasterServiceData: { mode: PaymasterMode.SPONSORED },
       });
 
-      const { transactionHash } = await userOpResponse.waitForTxHash();
+      await userOpResponse.waitForTxHash();
 
       await userOpResponse.wait();
     } catch (error) {
@@ -167,7 +166,7 @@ function App() {
         paymasterServiceData: { mode: PaymasterMode.SPONSORED },
       });
 
-      const { transactionHash } = await userOpResponse.waitForTxHash();
+      await userOpResponse.waitForTxHash();
 
       await userOpResponse.wait();
     } catch (error) {
@@ -198,7 +197,7 @@ function App() {
 
       console.log("Transaction Hash", transactionHash);
       const userOpReceipt = await userOpResponse.wait();
-      if (userOpReceipt.success == "true") {
+      if (userOpReceipt.success === "true") {
         console.log("UserOp receipt", userOpReceipt);
         console.log("Transaction receipt", userOpReceipt.receipt);
       }
@@ -207,20 +206,21 @@ function App() {
     }
   };
 
+
   const sponsoredPosts = [
     {
       id: "s1",
-      image: dummy,
+      image: 'https://m.media-amazon.com/images/I/81dwDTLOJLL._AC_UF894,1000_QL80_.jpg',
       caption: "Check out our new 8-bit inspired game!",
       likes: 45,
       sponsorLink: "https://example.com/sponsored-game1",
-      userPfp: dummy,
+      userPfp: '',
       userAddress: "0x12312321313134555",
     },
     {
       id: "s2",
-      image: dummy,
-      caption: "Check out our new 8-bit inspired game!",
+      image: 'https://www.retrogames.cz/games/022/NES-gameplay.gif',
+      caption: "Check out our new co-op game!",
       likes: 45,
       sponsorLink: "https://example.com/sponsored-game1",
       userPfp: dummy,

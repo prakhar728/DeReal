@@ -10,6 +10,9 @@
     "hardhat": "^2.22.11"
   },
   "dependencies": {
-    "dotenv": "^16.4.5"
+    "@chainlink/contracts": "^1.2.0",
+    "@pythnetwork/entropy-sdk-solidity": "^1.5.0",
+    "dotenv": "^16.4.5",
+    "ethers": "^6.13.2"
   }
 }
