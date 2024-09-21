@@ -106,6 +106,11 @@ function App() {
                 `https://plum-xerothermic-louse-526.mypinata.cloud/ipfs/${res[0]}`
               )
             ).json();
+            res["image2"] = (res[1] ? await (
+              await fetch(
+                `https://plum-xerothermic-louse-526.mypinata.cloud/ipfs/${res[1]}`
+              )
+            ).json() : "");
             res["index"] = i;
             posts.push(res);
           }
@@ -271,13 +276,6 @@ function App() {
         </div>
       </header>
 
-      <div className="cta-section">
-        <h2>Ready for spontaneous sharing?</h2>
-        <button className="cta-button" onClick={triggerCamera}>
-          Trigger
-        </button>
-      </div>
-
       <UploadPhotoModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -315,6 +313,7 @@ function App() {
               <PostCard
                 key={post.index}
                 image={post.image}
+                image2={post.image2}
                 caption={post.caption}
                 likes={post.likes}
                 userAddress={post.user}

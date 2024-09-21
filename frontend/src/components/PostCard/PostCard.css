@@ -1,67 +1,16 @@
 .post-card {
   background-color: rgba(255, 255, 255, 0.1);
-  border: 2px solid var(--accent-color);
+  border: 1px solid var(--accent-color);
   border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 24px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: relative;
-}
-.post-content {
-  position: relative;
+  padding: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.post-timestamp {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  font-size: 0.75rem;
-  color: #fff;
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 2px 6px;
-  border-radius: 4px;
-  z-index: 1;
-}
-.post-card:hover {
-  transform: translateY(-5px);
-}
-
-.post-image {
-  width: 100%;
-  height: auto;
-  border-radius: 4px;
-  image-rendering: pixelated;
-  display: block;
-}
-
-.post-caption {
-  margin-top: 12px;
-  font-size: 1rem;
-  color: var(--text-color);
-}
-
-.post-user-info {
+.post-header {
   display: flex;
   align-items: center;
-  margin-top: 8px;
-}
-
-.post-hashtags {
-  margin-top: 8px;
-}
-
-.hashtag {
-  display: inline-block;
-  margin-right: 8px;
-  padding: 2px 6px;
-  background-color: #f0f0f0;
-  border-radius: 4px;
-  font-size: 0.9em;
-  color: #1a1a1a;
+  margin-bottom: 12px;
 }
 
 .user-pfp {
@@ -69,19 +18,46 @@
   height: 32px;
   border-radius: 50%;
   margin-right: 8px;
-  border: 2px solid var(--primary-color);
   object-fit: cover;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
 }
 
 .user-address {
   font-size: 0.9rem;
+  color: var(--text-color);
+  font-weight: bold;
+}
+
+.post-timestamp {
+  font-size: 0.8rem;
   color: var(--secondary-color);
 }
 
-.post-actions {
+.post-content {
+  margin-bottom: 12px;
+}
+
+.post-image {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.post-caption {
+  font-size: 1rem;
+  color: var(--text-color);
+  margin-bottom: 8px;
+}
+
+.post-footer {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  margin-top: 12px;
 }
 
 .like-button {
@@ -89,16 +65,34 @@
   border: none;
   cursor: pointer;
   padding: 0;
-  margin-right: 8px;
+  display: flex;
+  align-items: center;
 }
 
 .like-icon {
-  width: 24px;
-  height: 24px;
-  image-rendering: pixelated;
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
 }
 
 .like-count {
   font-size: 0.9rem;
+  color: var(--text-color);
+}
+
+.post-hashtags {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.hashtag {
+  font-size: 0.8rem;
   color: var(--secondary-color);
+  margin-right: 8px;
+}
+
+@media screen and (max-width: 768px) {
+  .user-address {
+    display: none;
+  }
 }
