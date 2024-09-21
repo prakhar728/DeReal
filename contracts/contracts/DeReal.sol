@@ -3,7 +3,7 @@ pragma solidity ^0.8.17;
 
 import {IEntropyConsumer} from "@pythnetwork/entropy-sdk-solidity/IEntropyConsumer.sol";
 import {IEntropy} from "@pythnetwork/entropy-sdk-solidity/IEntropy.sol";
-import { AutomationCompatibleInterface } from "@chainlink/contracts/src/v0.8/automation/AutomationCompatible.sol";
+import {AutomationCompatibleInterface} from "@chainlink/contracts/src/v0.8/automation/AutomationCompatible.sol";
 
 contract DeReal is IEntropyConsumer, AutomationCompatibleInterface {
     address public owner;
@@ -21,6 +21,7 @@ contract DeReal is IEntropyConsumer, AutomationCompatibleInterface {
         address user;
         string content; // Link to content stored on IPFS
         uint256 timestamp;
+        uint256 likes; // New field
     }
 
     mapping(address => User) public users;
@@ -81,7 +82,14 @@ contract DeReal is IEntropyConsumer, AutomationCompatibleInterface {
         entropy.requestWithCallback{value: fee}(provider, bytes32(0));
     }
 
-    function checkUpkeep(bytes calldata /* checkData */) external view override returns (bool upkeepNeeded, bytes memory /* performData */) {
+    function checkUpkeep(
+        bytes calldata /* checkData */
+    )
+        external
+        view
+        override
+        returns (bool upkeepNeeded, bytes memory /* performData */)
+    {
         upkeepNeeded = block.timestamp >= nextEventTimestamp;
     }
 
@@ -126,21 +134,20 @@ contract DeReal is IEntropyConsumer, AutomationCompatibleInterface {
         interactions[interactionCount] = Interaction({
             user: msg.sender,
             content: _ipfsHash,
-            timestamp: block.timestamp
+            timestamp: block.timestamp,
+            likes: 0
         });
         users[msg.sender].interactions.push(interactionCount);
 
         emit InteractionPosted(msg.sender, interactionCount);
     }
 
-    // Like a specific interaction
     function likeInteraction(uint256 _interactionId) public userExists {
         require(
             _interactionId > 0 && _interactionId <= interactionCount,
             "Invalid interaction ID"
         );
-
-        users[interactions[_interactionId].user].likes++;
+        interactions[_interactionId].likes++;
         emit Liked(interactions[_interactionId].user, _interactionId);
     }
 
@@ -158,5 +165,13 @@ contract DeReal is IEntropyConsumer, AutomationCompatibleInterface {
         } else {
             return nextEventTimestamp - block.timestamp;
         }
+    }
+
+    function getLikes(uint256 _interactionId) public view returns (uint256) {
+        require(
+            _interactionId > 0 && _interactionId <= interactionCount,
+            "Invalid interaction ID"
+        );
+        return interactions[_interactionId].likes;
     }
 }
