@@ -12,8 +12,7 @@ export async function initListeners(settriggerCapture) {
     
     contract = new Contract(process.env.REACT_APP_DEPLOYED_CONTRACT, myContract.abi, provider);
 
-    contract.on("CamerasTriggered", (event) => {
-        console.log(event);
+    contract.on("RandomEventTriggered", (event) => {
         
         settriggerCapture(true);
     });
