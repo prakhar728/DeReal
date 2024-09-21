@@ -24,6 +24,7 @@ contract DeReal {
     event UserRegistered(address user);
     event InteractionPosted(address user, uint256 interactionId);
     event Liked(address user, uint256 interactionId);
+    event CamerasTriggered(address triggeredBy, uint256 timestamp);
 
     constructor() {
         owner = msg.sender;
@@ -87,4 +88,12 @@ contract DeReal {
         users[interactions[_interactionId].user].likes++;
         emit Liked(interactions[_interactionId].user, _interactionId);
     }
+
+    function triggerCameras() public {
+        // Add any necessary logic here
+        
+        // Emit the custom event
+        emit CamerasTriggered(msg.sender, block.timestamp);
+    }
+
 }
