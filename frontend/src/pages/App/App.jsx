@@ -30,8 +30,6 @@ function App() {
   const [showProfileModal, setshowProfileModal] = useState(false);
 
  useEffect(() => {
-  console.log(triggerCapture);
-  
   if (triggerCapture)
     setIsModalOpen(true);
  }, [triggerCapture])
@@ -178,8 +176,6 @@ function App() {
   };
 
   const postPhotoOnChain = async (cid) => {
-    console.log(cid);
-
     try {
       // Assuming you have already imported the ABI and necessary setup
       const transactionData = encodeFunctionData({

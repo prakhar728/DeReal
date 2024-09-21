@@ -17,6 +17,10 @@ export async function initListeners(settriggerCapture) {
         
         settriggerCapture(true);
     });
+
+    contract.on("*", (event) => {
+        console.log(event);
+    });
 }
 
 

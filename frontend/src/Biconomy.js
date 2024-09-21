@@ -2,8 +2,6 @@ import { Bundler } from "@biconomy/bundler";
 import { Paymaster, createSmartAccountClient, DEFAULT_ENTRYPOINT_ADDRESS, ECDSAOwnershipValidationModule, DEFAULT_ECDSA_OWNERSHIP_MODULE } from "@biconomy/account";
 import { optimismSepolia } from "viem/chains";
 
-console.log(optimismSepolia.id);
-
 const bundler = new Bundler({
   bundlerUrl: process.env.REACT_APP_BICONOMY_BUNDLER_URL,
   chainId: optimismSepolia.id, // Replace this with your desired network

@@ -56,7 +56,7 @@ const HomePage = () => {
               <img src={rightarrow} alt="right-arrow" className="right-arrow" />
             </button>
             <div className="user-count">
-              Users Berealed: {userCount.toLocaleString()}
+              Users De Realed: {userCount.toLocaleString()}
             </div>
           </div>
         </section>
@@ -87,7 +87,7 @@ const HomePage = () => {
         <section className="section about">
           <h2>About Our App</h2>
           <p>
-            Our decentralized BeReal-like application revolutionizes social
+            Our decentralized DeReal application revolutionizes social
             sharing by leveraging blockchain technology. Users engage in
             simultaneous, spontaneous content creation triggered by smart
             contracts, ensuring authenticity and excitement. With features like
@@ -96,7 +96,7 @@ const HomePage = () => {
           </p>
         </section>
         <footer>
-          <p>&copy; 2024 BeReal-like Decentralized App. All rights reserved.</p>
+          <p>&copy; 2024 DeReal Decentralized App. All rights reserved.</p>
         </footer>
       </div>
     </div>
