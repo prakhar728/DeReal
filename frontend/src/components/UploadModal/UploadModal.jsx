@@ -3,9 +3,9 @@ import Webcam from "react-webcam";
 import { FaCamera } from "react-icons/fa";
 
 import "./UploadModal.css";
-import { uploadJSONToIPFS } from "../../Ipfs";
+import { uploadJSONToIPFS } from "../../lib/Ipfs";
 
-const UploadPhotoModal = ({ isOpen, onClose }) => {
+const UploadPhotoModal = ({ isOpen, onClose, postPhotoOnChain }) => {
   const [caption, setCaption] = useState("");
   const [hashtags, setHashtags] = useState("");
   const [capturedImages, setCapturedImages] = useState([]);
@@ -47,7 +47,7 @@ const UploadPhotoModal = ({ isOpen, onClose }) => {
 
 
     let cid = await uploadJSONToIPFS(json);
-    console.log(cid);
+    postPhotoOnChain(cid.IpfsHash);
     
     setCapturedImages([]);
     setCaption("");

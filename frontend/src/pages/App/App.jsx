@@ -15,17 +15,27 @@ import SponsoredPostCard from "../../components/SponsoredCard/SponsoredCard.jsx"
 import dummy from "../../assets/dummy-image.jpg";
 import ContractData from "../../assets/contracts/DeReal.json";
 import { PaymasterMode } from "@biconomy/account";
+import { initListeners } from "../../lib/Contract.js";
 
 function App() {
   const { smartAccount } = useBiconomyAccount();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [walletAddress, setwalletAddress] = useState("");
-  const [contract, setcontract] = useState();
   const [userBio, setuserBio] = useState();
+  const [regularPosts, setRegularPosts] = useState([]);
+  const [triggerCapture, settriggerCapture] = useState(false);
   const { primaryWallet } = useDynamicContext();
 
   const contractAddress = process.env.REACT_APP_DEPLOYED_CONTRACT;
   const [showProfileModal, setshowProfileModal] = useState(false);
+
+ useEffect(() => {
+  console.log(triggerCapture);
+  
+  if (triggerCapture)
+    setIsModalOpen(true);
+ }, [triggerCapture])
+ 
 
   useEffect(() => {
     async function walletPopulate() {
@@ -38,25 +48,17 @@ function App() {
   }, [smartAccount]);
 
   useEffect(() => {
-    let c;
     async function me() {
       const signer = await getSigner(primaryWallet);
-      c = new ethers.Contract(contractAddress, ContractData.abi, signer);
-      setcontract(c);
-      try {
-        console.log(c);
+      let c = new ethers.Contract(contractAddress, ContractData.abi, signer);
 
+      initListeners(settriggerCapture);
+      try {
         let u = await c.viewBio(await smartAccount.getAccountAddress());
+
         if (u) {
           setuserBio(u);
-        }
-      } catch (error) {
-        console.log(error);
-        // Assuming you have already imported the ABI and necessary setup
-
-        console.log(primaryWallet);
-
-        try {
+        } else {
           const transactionData = encodeFunctionData({
             abi: ContractData.abi, // ABI of the contract
             functionName: "registerUser", // Name of the function you're calling
@@ -73,17 +75,81 @@ function App() {
             paymasterServiceData: { mode: PaymasterMode.SPONSORED },
           });
 
-          const { transactionHash } = await userOpResponse.waitForTxHash();
+          await userOpResponse.waitForTxHash();
 
           await userOpResponse.wait();
-        } catch (error) {
-          console.log(error);
         }
+      } catch (error) {
+        console.log(error);
       }
     }
 
     if (smartAccount && smartAccount.signer) me();
   }, [smartAccount]);
+
+  useEffect(() => {
+    async function fetchPosts() {
+      const signer = await getSigner(primaryWallet);
+      let c = new ethers.Contract(contractAddress, ContractData.abi, signer);
+      try {
+        let posts = [];
+        for (let i = 2; i <= (await c.interactionCount()); i++) {
+          let u = await c.interactions(i);
+
+          let res = await (
+            await fetch(
+              `https://plum-xerothermic-louse-526.mypinata.cloud/ipfs/${u[1]}`
+            )
+          ).json();
+          if (res) {
+            res["user"] = u[0];
+            res["timestamp"] = u[2];
+            res["image"] = await (
+              await fetch(
+                `https://plum-xerothermic-louse-526.mypinata.cloud/ipfs/${res[0]}`
+              )
+            ).json();
+            res["index"] = i;
+            posts.push(res);
+          }
+        }
+
+        setRegularPosts(posts);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    if (smartAccount) {
+      fetchPosts();
+    }
+  }, [smartAccount]);
+
+  const triggerCamera = async () => {
+    try {
+      // Assuming you have already imported the ABI and necessary setup
+      const transactionData = encodeFunctionData({
+        abi: ContractData.abi, // ABI of the contract
+        functionName: "triggerCameras", // Name of the function you're calling
+      });
+
+      // Build the transaction object
+      const tx = {
+        to: contractAddress, // The contract address you're interacting with
+        data: transactionData, // The encoded function data
+      };
+
+      const userOpResponse = await smartAccount.sendTransaction(tx, {
+        paymasterServiceData: { mode: PaymasterMode.SPONSORED },
+      });
+
+      const { transactionHash } = await userOpResponse.waitForTxHash();
+
+      await userOpResponse.wait();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleUpdate = async (bio) => {
     try {
@@ -105,6 +171,35 @@ function App() {
 
       const { transactionHash } = await userOpResponse.waitForTxHash();
 
+      await userOpResponse.wait();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const postPhotoOnChain = async (cid) => {
+    console.log(cid);
+
+    try {
+      // Assuming you have already imported the ABI and necessary setup
+      const transactionData = encodeFunctionData({
+        abi: ContractData.abi, // ABI of the contract
+        functionName: "postInteraction", // Name of the function you're calling
+        args: [cid], // Arguments for the function
+      });
+
+      // Build the transaction object
+      const tx = {
+        to: contractAddress, // The contract address you're interacting with
+        data: transactionData, // The encoded function data
+      };
+
+      const userOpResponse = await smartAccount.sendTransaction(tx, {
+        paymasterServiceData: { mode: PaymasterMode.SPONSORED },
+      });
+
+      const { transactionHash } = await userOpResponse.waitForTxHash();
+
       console.log("Transaction Hash", transactionHash);
       const userOpReceipt = await userOpResponse.wait();
       if (userOpReceipt.success == "true") {
@@ -115,26 +210,6 @@ function App() {
       console.log(error);
     }
   };
-
-  const regularPosts = [
-    {
-      id: 1,
-      image: dummy,
-      caption: "Exploring the pixel world!",
-      likes: 42,
-      userPfp: dummy,
-      userAddress: "0x12312321313134555",
-    },
-    {
-      id: 2,
-      image: dummy,
-      caption: "Exploring the pixel world!",
-      likes: 42,
-      userPfp: dummy,
-      userAddress: "0x12312321313134555",
-    },
-    // More posts...
-  ];
 
   const sponsoredPosts = [
     {
@@ -202,15 +277,15 @@ function App() {
 
       <div className="cta-section">
         <h2>Ready for spontaneous sharing?</h2>
-        <button className="cta-button" onClick={() => setIsModalOpen(true)}>
-          Upload Photo
-          <img src={rightarrow} alt="right-arrow" className="right-arrow" />
+        <button className="cta-button" onClick={triggerCamera}>
+          Trigger
         </button>
       </div>
 
       <UploadPhotoModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        postPhotoOnChain={postPhotoOnChain}
       />
 
       {/* Profile Update Modal */}
@@ -242,12 +317,14 @@ function App() {
               />
             ) : (
               <PostCard
-                key={post.id}
+                key={post.index}
                 image={post.image}
                 caption={post.caption}
                 likes={post.likes}
-                userAddress={post.userAddress}
+                userAddress={post.user}
+                hashtags={post.hashtags}
                 userPfp={post.userPfp}
+                timeStamp={post.timestamp}
               />
             )
           )}

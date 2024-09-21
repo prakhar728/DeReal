@@ -15,7 +15,6 @@ export function useBiconomyAccount() {
     try {
       const walletClient = await primaryWallet.getWalletClient();
       if (walletClient && !smartAccount) {
-        console.log("Creating smart account");
         const newSmartAccount = await createSmartAccount(walletClient);
         setSmartAccount(newSmartAccount);
       }

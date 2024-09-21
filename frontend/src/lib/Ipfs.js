@@ -1,10 +1,5 @@
 import { PinataSDK } from "pinata-web3";
 
-console.log({
-    pinataJwt: process.env.REACT_APP_PINATA_JWT,
-    pinataGateway: process.env.REACT_APP_PINATA_GATEWAY,
-});
-
 const pinata = new PinataSDK({
     pinataJwt: process.env.REACT_APP_PINATA_JWT,
     pinataGateway: process.env.REACT_APP_PINATA_GATEWAY,
