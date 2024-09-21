@@ -1,0 +1,100 @@
+.post-card {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid var(--accent-color);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.post-card:hover {
+  transform: translateY(-5px);
+}
+
+.post-image {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  image-rendering: pixelated;
+}
+
+.post-caption {
+  margin-top: 12px;
+  font-size: 1rem;
+  color: var(--text-color);
+}
+
+.post-user-info {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.user-pfp {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 8px;
+  border: 2px solid var(--primary-color);
+  object-fit: cover;
+}
+
+.user-address {
+  font-size: 0.9rem;
+  color: var(--secondary-color);
+}
+
+.post-actions {
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.like-button, .external-link-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-right: 8px;
+}
+
+.like-icon, .external-link-icon {
+  width: 24px;
+  height: 24px;
+  image-rendering: pixelated;
+}
+
+.like-count {
+  font-size: 0.9rem;
+  color: var(--secondary-color);
+  margin-right: auto;
+}
+
+/* Sponsored Post Card Styles */
+.sponsored-post-card {
+  border-color: var(--primary-color);
+  position: relative;
+}
+
+.sponsored-label {
+  position: absolute;
+  top: 10px;
+  left: -30px;
+  z-index: 10;
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  font-size: 1rem;
+  padding: 2px 30px;
+  transform: rotate(-45deg);
+  transform-origin: top left;
+  z-index: 1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 2px solid red;
+}
+
+.external-link-button {
+  margin-left: auto;
+}
