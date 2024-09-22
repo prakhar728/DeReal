@@ -11,6 +11,7 @@ import rightarrow from "../../assets/8-bit-right-arrow.gif";
 import pyth from "../../assets/techs/pyth.png";
 import dynamic from "../../assets/techs/dynamic.png";
 import solidity from "../../assets/techs/solidity.png";
+import chainlink from "../../assets/techs/chainlink.png";
 
 const HomePage = () => {
   const [userCount, setUserCount] = useState(0);
@@ -27,6 +28,7 @@ const HomePage = () => {
     { name: "Solidity", logo: solidity },
     { name: "Pyth Network", logo: pyth },
     { name: "Dynamic SDK", logo: dynamic },
+    { name: "ChainLink Automation", logo: chainlink },
   ];
 
   useEffect(() => {
