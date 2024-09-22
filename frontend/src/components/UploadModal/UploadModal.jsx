@@ -11,8 +11,27 @@ const UploadPhotoModal = ({ isOpen, onClose, postPhotoOnChain }) => {
   const [capturedImages, setCapturedImages] = useState([]);
   const [capturing, setCapturing] = useState(false);
   const [facingMode, setFacingMode] = useState("user");
+  const [timeLeft, setTimeLeft] = useState(120); // 2 minutes in seconds
   const webcamRef = useRef(null);
-  
+
+  useEffect(() => {
+    let timer;
+    if (isOpen && timeLeft > 0) {
+      timer = setInterval(() => {
+        setTimeLeft((prevTime) => prevTime - 1);
+      }, 1000);
+    } else if (timeLeft === 0) {
+      onClose();
+    }
+    return () => clearInterval(timer);
+  }, [isOpen, timeLeft, onClose]);
+
+  useEffect(() => {
+    if (isOpen) {
+      setTimeLeft(120); // Reset timer when modal opens
+    }
+  }, [isOpen]);
+
   const captureSequence = async () => {
     setCapturing(true);
     const images = [];
@@ -61,6 +80,8 @@ const UploadPhotoModal = ({ isOpen, onClose, postPhotoOnChain }) => {
     <div className="modal-overlay">
       <div className="modal-content">
         <h2>Upload Photo</h2>
+        <div className="timer">Time left: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}</div>
+
         <form onSubmit={handleSubmit}>
           <div className="photo-container">
             {capturedImages.length ? (

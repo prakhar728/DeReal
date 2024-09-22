@@ -5,6 +5,7 @@ import pixelHeartFilled from '../../assets/8-bit-pixel-heart-fill.png';
 import { bigintToTimestamp } from '../../lib/Utils';
 
 const PostCard = ({
+  interactionId,
   image,
   image2,
   caption,

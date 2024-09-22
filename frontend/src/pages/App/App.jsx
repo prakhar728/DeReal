@@ -99,6 +99,8 @@ function App() {
             )
           ).json();
           if (res) {
+            console.log(res);
+            
             res["user"] = u[0];
             res["timestamp"] = u[2];
             res["image"] = await (
@@ -127,12 +129,13 @@ function App() {
     }
   }, [smartAccount]);
 
-  const triggerCamera = async () => {
+  const likePost = async (id) => {
     try {
       // Assuming you have already imported the ABI and necessary setup
       const transactionData = encodeFunctionData({
         abi: ContractData.abi, // ABI of the contract
-        functionName: "triggerCameras", // Name of the function you're calling
+        functionName: "likeInteraction", // Name of the function you're calling
+        args: [id], // Arguments for the function
       });
 
       // Build the transaction object
@@ -140,7 +143,6 @@ function App() {
         to: contractAddress, // The contract address you're interacting with
         data: transactionData, // The encoded function data
       };
-
       const userOpResponse = await smartAccount.sendTransaction(tx, {
         paymasterServiceData: { mode: PaymasterMode.SPONSORED },
       });
@@ -151,7 +153,7 @@ function App() {
     } catch (error) {
       console.log(error);
     }
-  };
+  }
 
   const handleUpdate = async (bio) => {
     try {
@@ -240,6 +242,7 @@ function App() {
   };
 
   const interleavePosts = () => {
+    
     const result = [];
     let regularIndex = 0;
     let sponsoredIndex = 0;
@@ -320,6 +323,8 @@ function App() {
                 hashtags={post.hashtags}
                 userPfp={post.userPfp}
                 timeStamp={post.timestamp}
+                interactionId={post.index}
+                likePost={likePost}
               />
             )
           )}
