@@ -50,13 +50,20 @@ const PostCard = ({
       </div>
       
       <div className="post-content">
-        {image && (
-          <img
-            src={`data:image/png;base64,${image}`}
-            alt="Post"
-            className="post-image"
+        <div className="preview-container">
+          <img 
+            src={`data:image/png;base64,${image2 || image}`} 
+            alt="Back Camera" 
+            className="back-camera-preview"
           />
-        )}
+          {image2 && (
+            <img 
+              src={`data:image/png;base64,${image}`} 
+              alt="Front Camera" 
+              className="front-camera-preview"
+            />
+          )}
+        </div>
         <p className="post-caption">{caption}</p>
       </div>
       
