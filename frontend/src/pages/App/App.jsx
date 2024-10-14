@@ -6,11 +6,11 @@ import { FaUserCircle } from "react-icons/fa"; // Import profile icon from React
 import { encodeFunctionData } from "viem";
 
 import "./App.css";
-import UploadPhotoModal from "../../components/UploadModal/UploadModal.jsx";
-import ProfileUpdateModal from "../../components/ProfileUpdateModal/ProfileUploadModal.jsx";
+import UploadPhotoModal from "@/components/UploadModal/UploadModal.jsx";
+import ProfileUpdateModal from "@/components/ProfileUpdateModal/ProfileUploadModal.jsx";
 import { useBiconomyAccount } from "../../useBiconomyAccount.js";
-import PostCard from "../../components/PostCard/PostCard.jsx";
-import SponsoredPostCard from "../../components/SponsoredCard/SponsoredCard.jsx";
+import PostCard from "@/components/PostCard/PostCard.jsx";
+import SponsoredPostCard from "@/components/SponsoredCard/SponsoredCard.jsx";
 import dummy from "../../assets/dummy-image.jpg";
 import ContractData from "../../assets/contracts/DeReal.json";
 import { PaymasterMode } from "@biconomy/account";

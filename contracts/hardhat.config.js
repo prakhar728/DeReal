@@ -12,6 +12,10 @@ module.exports = {
     opSep : {
       url: process.env.OP_SEPOLIA,
       accounts: [`0x${process.env.PRIVATE_KEY}`], // Private key from .env
+    },
+    testnet_aurora: {
+      url: 'https://testnet.aurora.dev',
+      accounts: [`0x${process.env.PRIVATE_KEY}`]
     }
   },
   etherscan: {
