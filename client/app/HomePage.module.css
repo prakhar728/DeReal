@@ -1,0 +1,245 @@
+.homePage {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.landing {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.headerTitle {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.headerSubtitle {
+  font-size: 1rem;
+  color: var(--secondary-color);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.ctaSection {
+  text-align: center;
+  margin-bottom: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ctaButton {
+  font-size: 1.2rem;
+  padding: 15px 30px;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.rightArrow {
+  width: 40px;
+}
+
+.features,
+.techStack,
+.about {
+  margin-bottom: 60px;
+  min-height: 60vh;
+}
+
+.sectionTitle {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: var(--text-color)
+}
+
+.featuresGrid {
+  overflow: hidden;
+  width: 100%;
+}
+
+.featuresGridInner {
+  display: flex;
+  width: calc(100%);
+  animation: scrollLeft 20s linear infinite;
+}
+
+.featuresGridInner > * {
+  flex-shrink: 0;
+}
+
+@keyframes scrollLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.imageCard,
+.techCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 20vw;
+}
+
+.imageCardImage,
+.techCardImage {
+  padding: 18px;
+  width: 200px;
+  height: 200px;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.imageCardText,
+.techCardText {
+  padding: 18px;
+  text-align: center;
+}
+
+.techGrid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.listItem {
+  margin-bottom: 10px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.listItem::before {
+  content: '>';
+  position: absolute;
+  left: 0;
+  color: var(--accent-color);
+}
+
+.aboutSectionText {
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 60px;
+  font-size: 0.8rem;
+  color: var(--text-color);
+}
+
+.userCount {
+  margin-top: 20px;
+  font-size: 1.2rem;
+  color: var(--accent-color);
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 10px 20px;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+  .homePage {
+    padding: 10px;
+  }
+
+  .headerTitle {
+    font-size: 2rem;
+  }
+
+  .headerSubtitle {
+    font-size: 0.9rem;
+  }
+
+  .ctaButton {
+    font-size: 1rem;
+    padding: 12px 24px;
+  }
+
+  .sectionTitle {
+    font-size: 1.5rem;
+  }
+
+  .imageCard,
+  .techCard {
+    width: 40vw;
+  }
+
+  .imageCardImage,
+  .techCardImage {
+    width: 150px;
+    height: 150px;
+  }
+
+  .imageCardText,
+  .techCardText {
+    font-size: 0.9rem;
+  }
+
+  .userCount {
+    font-size: 1rem;
+    padding: 8px 16px;
+  }
+
+  .aboutSectionText {
+    font-size: 0.8rem;
+  }
+
+  .footer {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .headerTitle {
+    font-size: 1.8rem;
+  }
+
+  .ctaButton {
+    font-size: 0.9rem;
+    padding: 10px 20px;
+  }
+
+  .imageCard,
+  .techCard {
+    width: 80vw;
+  }
+
+  .imageCardImage,
+  .techCardImage {
+    width: 120px;
+    height: 120px;
+  }
+
+  .featuresGridInner {
+    animation: none;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
