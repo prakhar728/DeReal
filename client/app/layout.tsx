@@ -1,5 +1,9 @@
 import './globals.css';
 import { Press_Start_2P } from 'next/font/google';
+import type { Metadata } from "next";
+import ContextProvider from '@/context';
+import { headers } from 'next/headers';
+
 
 const pressStart2P = Press_Start_2P({
   subsets: ['latin'], // Specify subsets (e.g., latin)
@@ -7,7 +11,7 @@ const pressStart2P = Press_Start_2P({
   display: 'swap', // Controls the font's display behavior
 });
 
-export const metadata = {
+export const metadata:Metadata = {
   title: 'DeReal',
   description: 'Share spontaneous moments, triggered by smart contracts',
 };
@@ -17,9 +21,12 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const cookies = headers().get('cookie')
+
   return (
     <html lang="en">
-      <body className={pressStart2P.className}>{children}</body>
+      <ContextProvider cookies={cookies}><body  className={pressStart2P.className} >{children}</body></ContextProvider>
     </html>
   );
 }
+

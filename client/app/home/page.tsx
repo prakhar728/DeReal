@@ -88,12 +88,13 @@ export default function Home() {
     <div className="min-h-screen">
       <header className="grid items-center justify-items-end p-4">
         <div className="flex items-center gap-4">
-          <button
+          {/* <button
             onClick={() => setShowProfileModal(true)}
             className="flex items-center"
           >
-            {/* <FaUserCircle size={30} className="cursor-pointer" /> */}
-          </button>
+            <FaUserCircle size={30} className="cursor-pointer" />
+          </button> */}
+          <w3m-button />
         </div>
       </header>
 
