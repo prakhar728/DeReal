@@ -6,6 +6,7 @@ import UploadPhotoModal from "@/components/UploadModal/UploadModal";
 import ProfileUpdateModal from "@/components/ProfileUpdateModal/ProfileUpdateModal";
 import PostCard from "@/components/PostCard/PostCard";
 import SponsoredPostCard from "@/components/SponsoredCard/SponsoredCard";
+import { DEPLOYED_CONTRACT } from "@/lib/contract";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,7 +15,7 @@ export default function Home() {
   const [regularPosts, setRegularPosts] = useState([]);
   const [triggerCapture, setTriggerCapture] = useState(false);
 
-  const contractAddress = process.env.NEXT_PUBLIC_DEPLOYED_CONTRACT;
+  const contractAddress = DEPLOYED_CONTRACT;
   const [showProfileModal, setShowProfileModal] = useState(false);
 
   useEffect(() => {
