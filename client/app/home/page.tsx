@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from "react";
 
@@ -8,11 +8,50 @@ import PostCard from "@/components/PostCard/PostCard";
 import SponsoredPostCard from "@/components/SponsoredCard/SponsoredCard";
 import { DEPLOYED_CONTRACT } from "@/lib/contract";
 
+const sponsoredPosts: SponsorPost[] = [
+  {
+    id: "s1",
+    image:
+      "https://m.media-amazon.com/images/I/81dwDTLOJLL._AC_UF894,1000_QL80_.jpg",
+    caption: "Check out our new 8-bit inspired game!",
+    likes: 45,
+    sponsorLink: "https://example.com/sponsored-game1",
+    userPfp: "",
+    userAddress: "0x12312321313134555",
+  },
+  {
+    id: "s2",
+    image: "https://www.retrogames.cz/games/022/NES-gameplay.gif",
+    caption: "Check out our new co-op game!",
+    likes: 45,
+    sponsorLink: "https://example.com/sponsored-game1",
+    userPfp: "/dummy-image.jpg",
+    userAddress: "0x12312321313134555",
+  },
+];
+
+const regularPostDummyData: RegularPost[] = [
+  {
+    index: 0,
+    id: "s1",
+    image:
+      "https://m.media-amazon.com/images/I/81dwDTLOJLL._AC_UF894,1000_QL80_.jpg",
+    image2:
+      "https://m.media-amazon.com/images/I/81dwDTLOJLL._AC_UF894,1000_QL80_.jpg",
+    caption: "Check out our new 8-bit inspired game!",
+    likes: 45,
+    userAddress: "0x12312321313134555",
+    hashtags: ["hash1", "hash2"],
+    userPfp: "",
+    timeStamp: "string",
+  },
+];
+
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [walletAddress, setWalletAddress] = useState("");
   const [userBio, setUserBio] = useState("");
-  const [regularPosts, setRegularPosts] = useState([]);
+  const [regularPosts, setRegularPosts] = useState(regularPostDummyData);
   const [triggerCapture, setTriggerCapture] = useState(false);
 
   const contractAddress = DEPLOYED_CONTRACT;
@@ -21,27 +60,6 @@ export default function Home() {
   useEffect(() => {
     if (triggerCapture) setIsModalOpen(true);
   }, [triggerCapture]);
-
-  const sponsoredPosts = [
-    {
-      id: "s1",
-      image: 'https://m.media-amazon.com/images/I/81dwDTLOJLL._AC_UF894,1000_QL80_.jpg',
-      caption: "Check out our new 8-bit inspired game!",
-      likes: 45,
-      sponsorLink: "https://example.com/sponsored-game1",
-      userPfp: '',
-      userAddress: "0x12312321313134555",
-    },
-    {
-      id: "s2",
-      image: 'https://www.retrogames.cz/games/022/NES-gameplay.gif',
-      caption: "Check out our new co-op game!",
-      likes: 45,
-      sponsorLink: "https://example.com/sponsored-game1",
-      userPfp: '/dummy-image.jpg',
-      userAddress: "0x12312321313134555",
-    },
-  ];
 
   const getRandomSponsoredPost = () => {
     const randomIndex = Math.floor(Math.random() * sponsoredPosts.length);
@@ -74,10 +92,9 @@ export default function Home() {
     console.log("Dummy postPhotoOnChain function called");
   };
 
-  const handleUpdate = (updatedWalletAddress: string, updatedUserBio: string) => {
-    setWalletAddress(updatedWalletAddress);
+  const handleUpdate = (updatedUserBio: string) => {
     setUserBio(updatedUserBio);
-    console.log("Dummy handleUpdate function called with:", updatedWalletAddress, updatedUserBio);
+    console.log("Dummy handleUpdate function called with:", updatedUserBio);
   };
 
   const likePost = (postId: string) => {
@@ -121,7 +138,7 @@ export default function Home() {
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {interleavedPosts.map((post) =>
-            post.sponsorLink ? (
+            "sponsorLink" in post ? (
               <SponsoredPostCard
                 key={post.id}
                 image={post.image}
@@ -138,12 +155,10 @@ export default function Home() {
                 image2={post.image2}
                 caption={post.caption}
                 likes={post.likes}
-                userAddress={post.user}
+                userAddress={post.userAddress}
                 hashtags={post.hashtags}
                 userPfp={post.userPfp}
-                timeStamp={post.timestamp}
-                interactionId={post.index}
-                likePost={likePost}
+                timeStamp={post.timeStamp}
               />
             )
           )}

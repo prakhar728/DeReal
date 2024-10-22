@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Image from 'next/image';
 
 const SponsoredPostCard = ({ 
   image, 
@@ -39,10 +38,9 @@ const SponsoredPostCard = ({
       </div>
 
       <div className="relative h-48 w-full">
-        <Image 
+        <img 
           src={image} 
           alt="Sponsored Post" 
-          fill
           className="rounded image-rendering-pixelated object-cover"
         />
       </div>
@@ -53,10 +51,9 @@ const SponsoredPostCard = ({
 
       <div className="mt-2 flex items-center">
         <div className="relative h-8 w-8">
-          <Image
+          <img
             src={userPfp}
             alt="User Profile"
-            fill
             className="rounded-full border-2 border-primary object-cover"
           />
         </div>
@@ -71,10 +68,9 @@ const SponsoredPostCard = ({
           className="p-0 mr-2"
         >
           <div className="relative h-6 w-6">
-            <Image
+            <img
               src={isLiked ? '/8-bit-pixel-heart-fill.png' : '/8-bit-pixel-heart.png'}
               alt="Like"
-              fill
               className="image-rendering-pixelated"
             />
           </div>
@@ -91,10 +87,9 @@ const SponsoredPostCard = ({
           className="ml-auto"
         >
           <div className="relative h-6 w-6">
-            <Image
+            <img
               src="/external-link.png"
               alt="External Link"
-              fill
               className="image-rendering-pixelated"
             />
           </div>
