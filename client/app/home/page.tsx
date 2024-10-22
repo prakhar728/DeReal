@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
+import { Camera } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import UploadPhotoModal from "@/components/UploadModal/UploadModal";
 import ProfileUpdateModal from "@/components/ProfileUpdateModal/ProfileUpdateModal";
 import PostCard from "@/components/PostCard/PostCard";
@@ -102,22 +103,16 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pb-20">
       <header className="grid items-center justify-items-end p-4">
         <div className="flex items-center gap-4">
-          {/* <button
-            onClick={() => setShowProfileModal(true)}
-            className="flex items-center"
-          >
-            <FaUserCircle size={30} className="cursor-pointer" />
-          </button> */}
           <w3m-button />
         </div>
       </header>
 
       <UploadPhotoModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() =>{ setIsModalOpen(false)}}
         postPhotoOnChain={postPhotoOnChain}
       />
 
@@ -164,6 +159,25 @@ export default function Home() {
           )}
         </div>
       </main>
+
+      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
+        <div className="rounded-full p-1 bg-primary/20 backdrop-blur-sm">
+          <Button
+            onClick={() => {setIsModalOpen(true);
+
+              console.log("Opening");
+              
+            }}
+            className="rounded-full w-16 h-16 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-primary/20 backdrop-blur-sm" style={{
+              clipPath: 'polygon(0 0, 25% 0, 25% 25%, 50% 25%, 50% 50%, 75% 50%, 75% 75%, 100% 75%, 100% 100%, 0 100%)'
+            }}></div>
+            <Camera className="w-8 h-8 relative z-10" />
+            <span className="sr-only">Open camera</span>
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }

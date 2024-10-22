@@ -1,102 +1,99 @@
-import React, { useState } from 'react';
+'use client'
 
-const SponsoredPostCard = ({ 
-  image, 
-  caption, 
-  likes, 
-  sponsorLink, 
-  userPfp, 
-  userAddress 
-}: {
-    image: any, 
-    caption: any, 
-    likes: any, 
-    sponsorLink: any, 
-    userPfp: any, 
-    userAddress: any 
-}) => {
-  const [isLiked, setIsLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(likes);
+import { useState } from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { Heart, ExternalLink } from 'lucide-react'
+
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+
+interface SponsoredPostCardProps {
+  image: string
+  caption: string
+  likes: number
+  sponsorLink: string
+  userPfp: string
+  userAddress: string
+}
+
+export default function SponsoredPostCard({
+  image,
+  caption,
+  likes,
+  sponsorLink,
+  userPfp,
+  userAddress,
+}: SponsoredPostCardProps) {
+  const [isLiked, setIsLiked] = useState(false)
+  const [likeCount, setLikeCount] = useState(likes)
 
   const handleLike = () => {
-    if (isLiked) {
-      setLikeCount(likeCount - 1);
-    } else {
-      setLikeCount(likeCount + 1);
-    }
-    setIsLiked(!isLiked);
-  };
+    setIsLiked((prev) => !prev)
+    setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1))
+  }
 
-  const shortenAddress = (address: any) => {
-    return address ? `${address.slice(0, 6)}...${address.slice(-4)}` : '';
-  };
+  const shortenAddress = (address: string) => {
+    return `${address.slice(0, 6)}...${address.slice(-4)}`
+  }
 
   return (
-    <div className="relative mb-6 overflow-hidden rounded-lg border-2 border-primary bg-white/10 p-4 shadow-md transition-transform duration-300 hover:-translate-y-1">
-      <div className="absolute -left-8 top-2.5 z-10 -rotate-45 transform bg-primary px-8 py-0.5 text-base text-background shadow-md">
-        <span className="border-2 border-red-500">Sponsored</span>
+    <Card className="relative mb-6 overflow-hidden bg-gray-800 transition-transform duration-300 hover:-translate-y-1">
+      <div className="absolute -left-8 top-2.5 z-10 -rotate-45 bg-primary px-8 py-0.5 text-base text-primary-foreground shadow-md">
+        <span className="border-2 border-secondary">Sponsored</span>
       </div>
 
-      <div className="relative h-48 w-full">
-        <img 
-          src={image} 
-          alt="Sponsored Post" 
-          className="rounded image-rendering-pixelated object-cover"
-        />
-      </div>
-
-      <p className="mt-3 text-base text-text">
-        {caption}
-      </p>
-
-      <div className="mt-2 flex items-center">
-        <div className="relative h-8 w-8">
-          <img
-            src={userPfp}
-            alt="User Profile"
-            className="rounded-full border-2 border-primary object-cover"
+      <CardHeader className="p-0">
+        <div className="relative h-48 w-full">
+          <Image
+            src={image}
+            alt="Sponsored Post"
+            fill
+            className="rounded-t-lg object-cover"
           />
         </div>
-        <span className="ml-2 text-sm text-secondary">
-          {shortenAddress(userAddress)}
-        </span>
-      </div>
+      </CardHeader>
 
-      <div className="mt-3 flex items-center">
-        <button 
-          onClick={handleLike} 
-          className="p-0 mr-2"
+      <CardContent className="p-4">
+        <p className="text-base text-gray-200">{caption}</p>
+
+        <div className="mt-2 flex items-center">
+          <Avatar className="h-8 w-8 border border-gray-600">
+            <AvatarImage src={userPfp} alt="User Profile" />
+            <AvatarFallback className="bg-gray-700 text-gray-200">{userAddress.slice(0, 2)}</AvatarFallback>
+          </Avatar>
+          <span className="ml-2 text-sm text-gray-400">
+            {shortenAddress(userAddress)}
+          </span>
+        </div>
+      </CardContent>
+
+      <CardFooter className="flex items-center p-4">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="mr-2 p-0 text-gray-400 hover:text-gray-200"
+          onClick={handleLike}
+          aria-label={isLiked ? 'Unlike' : 'Like'}
         >
-          <div className="relative h-6 w-6">
-            <img
-              src={isLiked ? '/8-bit-pixel-heart-fill.png' : '/8-bit-pixel-heart.png'}
-              alt="Like"
-              className="image-rendering-pixelated"
-            />
-          </div>
-        </button>
+          <Heart
+            className={`h-6 w-6 ${isLiked ? 'fill-primary text-primary' : ''}`}
+          />
+        </Button>
 
-        <span className="text-sm text-secondary mr-auto">
-          {likeCount}
-        </span>
+        <span className="text-sm text-gray-400">{likeCount}</span>
 
-        <a 
-          href={sponsorLink} 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="ml-auto"
+        <Link
+          href={sponsorLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="ml-auto text-gray-400 hover:text-gray-200"
+          aria-label="Visit sponsor's website"
         >
-          <div className="relative h-6 w-6">
-            <img
-              src="/external-link.png"
-              alt="External Link"
-              className="image-rendering-pixelated"
-            />
-          </div>
-        </a>
-      </div>
-    </div>
-  );
-};
-
-export default SponsoredPostCard;
+          <ExternalLink className="h-6 w-6" />
+        </Link>
+      </CardFooter>
+    </Card>
+  )
+}

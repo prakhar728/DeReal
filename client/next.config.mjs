@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  images: {
+    domains: ["m.media-amazon.com", "retrogames.cz"], // Add other domains here if needed
+  },
+};
 
 export default nextConfig;

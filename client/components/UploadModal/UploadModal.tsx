@@ -1,5 +1,5 @@
 // UploadModal.tsx
-'use client';
+"use client";
 
 import React, { useState, useRef, useEffect } from "react";
 import Webcam from "react-webcam";
@@ -14,10 +14,10 @@ interface UploadPhotoModalProps {
   postPhotoOnChain: (hash: string) => void;
 }
 
-const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({ 
-  isOpen, 
-  onClose, 
-  postPhotoOnChain 
+const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({
+  isOpen,
+  onClose,
+  postPhotoOnChain,
 }) => {
   const [caption, setCaption] = useState("");
   const [hashtags, setHashtags] = useState("");
@@ -68,20 +68,31 @@ const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const json: Record<string | number, any> = {};
-    
-    for (const [index, value] of capturedImages.entries()) {
-      if (value) {
-        const cid = await uploadJSONToIPFS(value.split(",")[1]);
-        json[index] = cid.IpfsHash;
+
+    const uploadCIDs = await Promise.all(
+      capturedImages.map(async (imageData, index) => {
+        if (imageData) {
+          const [, imageContent] = imageData.split(",");
+          const cid = await uploadJSONToIPFS(imageContent);
+          return { index, cid: cid.IpfsHash };
+        }
+        return null; // Handle cases where there's no value in `imageData`
+      })
+    );
+
+    // Updating the `json` array with the uploaded CIDs
+    uploadCIDs.forEach((item) => {
+      if (item) {
+        json[item.index] = item.cid;
       }
-    }
-    
+    });
+
     json["caption"] = caption;
-    json["hashtags"] = hashtags.split(',');
+    json["hashtags"] = hashtags.split(",");
 
     const cid = await uploadJSONToIPFS(json);
     postPhotoOnChain(cid.IpfsHash);
-    
+
     setCapturedImages([]);
     setCaption("");
     setHashtags("");
@@ -95,22 +106,23 @@ const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({
       <div className={styles.modalContent}>
         <h2>Upload Photo</h2>
         <div className={styles.timer}>
-          Time left: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
+          Time left: {Math.floor(timeLeft / 60)}:
+          {(timeLeft % 60).toString().padStart(2, "0")}
         </div>
 
         <form onSubmit={handleSubmit}>
           <div className={styles.photoContainer}>
             {capturedImages.length ? (
               <div className={styles.previewContainer}>
-                <img 
-                  src={capturedImages[1] || capturedImages[0]} 
-                  alt="Back Camera" 
+                <img
+                  src={capturedImages[1] || capturedImages[0]}
+                  alt="Back Camera"
                   className={styles.backCameraPreview}
                 />
                 {capturedImages.length > 1 && (
-                  <img 
-                    src={capturedImages[0]} 
-                    alt="Front Camera" 
+                  <img
+                    src={capturedImages[0]}
+                    alt="Front Camera"
                     className={styles.frontCameraPreview}
                   />
                 )}
@@ -125,7 +137,7 @@ const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({
                   videoConstraints={{ facingMode }}
                   className={styles.webcam}
                 />
-                
+
                 <button
                   type="button"
                   onClick={captureSequence}
@@ -159,9 +171,9 @@ const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({
             <button type="submit" className={styles.submitButton}>
               Post
             </button>
-            <button 
-              type="button" 
-              onClick={onClose} 
+            <button
+              type="button"
+              onClick={onClose}
               className={styles.cancelButton}
             >
               Cancel
