@@ -102,3 +102,7 @@ button:hover {
     @apply border-border;
   }
 }
+
+.image-rendering-pixelated {
+  image-rendering: pixelated;
+}

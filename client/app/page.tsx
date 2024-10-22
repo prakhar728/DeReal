@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import React, { MouseEvent, useEffect, useState } from "react";
 import styles from "./HomePage.module.css";
 import Image from "next/image";
+import Link from "next/link";
 
 const HomePage: React.FC = () => {
   const [userCount, setUserCount] = useState(0);
@@ -11,7 +11,10 @@ const HomePage: React.FC = () => {
   const features = [
     { name: "Random Time Event Scheduling", image: "/pixel-art-clock.gif" },
     { name: "On-Chain Randomness", image: "/8-bit-on-chain.png" },
-    { name: "User Authentication and Bot Prevention", image: "/8-bit-no-bot.png" },
+    {
+      name: "User Authentication and Bot Prevention",
+      image: "/8-bit-no-bot.png",
+    },
     { name: "Token-Gated Community", image: "/8-bit-token-gated.png" },
     { name: "AI Content Moderation", image: "/8-bit-ai-moderation.webp" },
   ];
@@ -44,25 +47,27 @@ const HomePage: React.FC = () => {
               Share spontaneous moments, triggered by smart contracts
             </p>
           </div>
-          <h2 className={styles.sectionTitle}>Ready for spontaneous sharing?</h2>
-          <button className={styles.ctaButton} >
-            Go to App
-            <Image
-              src="/8-bit-right-arrow.gif"
-              alt="right-arrow"
-              width={24}
-              height={24}
-              className={styles.rightArrow}
-            />
+          <h2 className={styles.sectionTitle}>
+            Ready for spontaneous sharing?
+          </h2>
+          <button className={styles.ctaButton}>
+            <Link href="/home" className="flex items-center">
+              Go to App
+              <Image
+                src="/8-bit-right-arrow.gif"
+                alt="right-arrow"
+                width={24}
+                height={24}
+                className={styles.rightArrow}
+              />
+            </Link>
           </button>
           <div className={styles.userCount}>
             Users De Realed: {userCount.toLocaleString()}
           </div>
         </section>
 
-        <section className={styles.section}>
-          
-        </section>
+        <section className={styles.section}></section>
 
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>Key Features</h2>
@@ -105,11 +110,12 @@ const HomePage: React.FC = () => {
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>About Our App</h2>
           <p className={styles.aboutSectionText}>
-            Our decentralized DeReal application revolutionizes social sharing by leveraging
-            blockchain technology. Users engage in simultaneous, spontaneous content creation
-            triggered by smart contracts, ensuring authenticity and excitement. With features
-            like on-chain randomness, bot prevention, and AI moderation, we provide a secure
-            and engaging platform for genuine human interaction.
+            Our decentralized DeReal application revolutionizes social sharing
+            by leveraging blockchain technology. Users engage in simultaneous,
+            spontaneous content creation triggered by smart contracts, ensuring
+            authenticity and excitement. With features like on-chain randomness,
+            bot prevention, and AI moderation, we provide a secure and engaging
+            platform for genuine human interaction.
           </p>
         </section>
 
