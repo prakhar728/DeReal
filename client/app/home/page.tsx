@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Camera } from "lucide-react";
+import { Camera, Home, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import UploadPhotoModal from "@/components/UploadModal/UploadModal";
 import ProfileUpdateModal from "@/components/ProfileUpdateModal/ProfileUpdateModal";
@@ -44,15 +44,15 @@ const regularPostDummyData: RegularPost[] = [
     userAddress: "0x12312321313134555",
     hashtags: ["hash1", "hash2"],
     userPfp: "",
-    timeStamp: "string",
+    timeStamp: BigInt(0),
   },
 ];
 
-export default function Home() {
+export default function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [walletAddress, setWalletAddress] = useState("");
   const [userBio, setUserBio] = useState("");
-  const [regularPosts, setRegularPosts] = useState(regularPostDummyData);
+  const [regularPosts, setRegularPosts] = useState<RegularPost[]>([]);
   const [triggerCapture, setTriggerCapture] = useState(false);
 
   const contractAddress = DEPLOYED_CONTRACT;
@@ -103,7 +103,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen pb-20">
+    <div className="min-h-screen pb-16">
       <header className="grid items-center justify-items-end p-4">
         <div className="flex items-center gap-4">
           <w3m-button />
@@ -112,7 +112,7 @@ export default function Home() {
 
       <UploadPhotoModal
         isOpen={isModalOpen}
-        onClose={() =>{ setIsModalOpen(false)}}
+        onClose={() => { setIsModalOpen(false) }}
         postPhotoOnChain={postPhotoOnChain}
       />
 
@@ -160,24 +160,37 @@ export default function Home() {
         </div>
       </main>
 
-      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
-        <div className="rounded-full p-1 bg-primary/20 backdrop-blur-sm">
-          <Button
-            onClick={() => {setIsModalOpen(true);
-
-              console.log("Opening");
-              
-            }}
-            className="rounded-full w-16 h-16 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg relative overflow-hidden"
-          >
-            <div className="absolute inset-0 bg-primary/20 backdrop-blur-sm" style={{
-              clipPath: 'polygon(0 0, 25% 0, 25% 25%, 50% 25%, 50% 50%, 75% 50%, 75% 75%, 100% 75%, 100% 100%, 0 100%)'
-            }}></div>
-            <Camera className="w-8 h-8 relative z-10" />
-            <span className="sr-only">Open camera</span>
-          </Button>
+      <nav className="fixed bottom-0 left-0 right-0 bg-background/10 backdrop-blur-sm ">
+        <div className="container mx-auto px-4 max-w-lg">
+          <div className="flex justify-between items-center py-2">
+            <Button variant="ghost" className="flex-1 text-primary-foreground">
+              <Home className="w-6 h-6" />
+              <span className="sr-only">Home</span>
+            </Button>
+            <div className="flex-1 flex justify-center">
+              <div className="rounded-full p-1 bg-primary/20">
+                <Button
+                  onClick={() => {
+                    setIsModalOpen(true);
+                    console.log("Opening");
+                  }}
+                  className="rounded-full w-12 h-12 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg relative overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-secondary/80" style={{
+                    clipPath: 'polygon(0 0, 25% 0, 25% 25%, 50% 25%, 50% 50%, 75% 50%, 75% 75%, 100% 75%, 100% 100%, 0 100%)'
+                  }}></div>
+                  <Camera className="w-5 h-5 relative z-10" />
+                  <span className="sr-only">Open camera</span>
+                </Button>
+              </div>
+            </div>
+            <Button variant="ghost" className="flex-1 text-primary-foreground" onClick={() => setShowProfileModal(true)}>
+              <User className="w-6 h-6" />
+              <span className="sr-only">Profile</span>
+            </Button>
+          </div>
         </div>
-      </div>
+      </nav>
     </div>
   );
 }

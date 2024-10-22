@@ -1,7 +1,31 @@
-import React, { useState } from "react";
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
+import { Heart } from "lucide-react";
+
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { bigintToTimestamp } from "@/lib/utils";
 
-const PostCard = ({
+interface PostCardProps {
+  image: string;
+  image2?: string;
+  caption: string;
+  likes: number;
+  userPfp: string;
+  userAddress: string;
+  hashtags: string[];
+  timeStamp: bigint;
+}
+
+export default function PostCard({
   image,
   image2,
   caption,
@@ -10,31 +34,22 @@ const PostCard = ({
   userAddress,
   hashtags,
   timeStamp,
-}: {
-  image: any;
-  image2: any;
-  caption: any;
-  likes: any;
-  userPfp: any;
-  userAddress: any;
-  hashtags: any;
-  timeStamp: any;
-}) => {
+}: PostCardProps) {
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(likes);
 
   const handleLike = () => {
-    setLikeCount((prevCount: any) => prevCount + (isLiked ? -1 : 1));
-    setIsLiked(!isLiked);
+    setIsLiked((prev) => !prev);
+    setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
   };
 
-  const shortenAddress = (address: any) => {
-    return address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "";
+  const shortenAddress = (address: string) => {
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
 
-  const formatRelativeTime = (timeStamp: any) => {
-    const date = bigintToTimestamp(timeStamp);
-    const now: Date = new Date(); // Assume 'now' is initialized as the current time
+  const formatRelativeTime = (timestamp: bigint) => {
+    const date = bigintToTimestamp(timestamp);
+    const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
     if (diffInSeconds < 60) return `${diffInSeconds}s`;
     if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m`;
@@ -46,73 +61,68 @@ const PostCard = ({
   };
 
   return (
-    <div className="bg-white/10 border border-accent rounded-lg p-3 mb-5 shadow-md">
-      <div className="flex items-center mb-3">
-        <div className="relative w-8 h-8 mr-2">
-          <img
-            src={userPfp}
-            alt="User Profile"
-            className="rounded-full object-cover"
-          />
-        </div>
+    <Card className="mb-5 bg-gray-800 shadow-md">
+      <CardHeader className="flex items-center space-x-4 p-3">
+        <Avatar className="h-8 w-8">
+          <AvatarImage src={userPfp} alt="User Profile" />
+          <AvatarFallback>{userAddress.slice(0, 2)}</AvatarFallback>
+        </Avatar>
         <div className="flex flex-col">
-          <span className="text-sm font-bold text-text md:block">
+          <span className="text-sm font-bold text-gray-200 md:block">
             {shortenAddress(userAddress)}
           </span>
-          <span className="text-xs text-secondary">
+          <span className="text-xs text-gray-400">
             {formatRelativeTime(timeStamp)}
           </span>
         </div>
-      </div>
+      </CardHeader>
 
-      <div className="mb-3">
-        <div className="relative w-full">
-          <img
-            src={`data:image/png;base64,${image2 || image}`}
-            alt="Back Camera"
-            width={400}
-            height={300}
-            className="w-full rounded"
-          />
+      <CardContent className="p-3">
+        <div className="relative mb-3 w-full">
+          {(image2 || image) && (
+            <Image
+              src={image2 || image} // If image2 exists, use it; otherwise fallback to image
+              alt="Post image"
+              width={400}
+              height={300}
+              className="w-full rounded"
+            />
+          )}
           {image2 && (
-            <div className="absolute top-2.5 right-2.5 w-[30%]">
-              <img
-                src={`data:image/png;base64,${image}`}
+            <div className="absolute right-2.5 top-2.5 w-[30%]">
+              <Image
+                src={image} // This renders the secondary image on top, as a small image
                 alt="Front Camera"
                 width={120}
                 height={90}
-                className="border-2 border-white rounded-lg"
+                className="rounded-lg border-2 border-white"
               />
             </div>
           )}
         </div>
-        <p className="text-base text-text mt-2">{caption}</p>
-      </div>
+        <p className="mt-2 text-base text-gray-200">{caption}</p>
+      </CardContent>
 
-      <div className="flex justify-between items-center">
-        <button
+      <CardFooter className="flex items-center justify-between p-3">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="flex items-center space-x-1 p-0 text-gray-400 hover:text-gray-200"
           onClick={handleLike}
-          className="flex items-center bg-transparent border-0 cursor-pointer p-0"
         >
-          <img
-            src={isLiked ? "/heart-filled.png" : "/heart.png"}
-            alt="Like"
-            width={20}
-            height={20}
-            className="mr-1"
+          <Heart
+            className={`h-5 w-5 ${isLiked ? "fill-primary text-primary" : ""}`}
           />
-          <span className="text-sm text-text">{likeCount}</span>
-        </button>
+          <span className="text-sm">{likeCount}</span>
+        </Button>
         <div className="flex flex-wrap">
-          {hashtags.map((tag: any, index: any) => (
-            <span key={index} className="text-xs text-secondary mr-2">
+          {hashtags.map((tag, index) => (
+            <span key={index} className="mr-2 text-xs text-gray-400">
               #{tag}
             </span>
           ))}
         </div>
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   );
-};
-
-export default PostCard;
+}

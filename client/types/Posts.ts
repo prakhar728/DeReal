@@ -11,7 +11,7 @@ interface RegularPost extends Post {
     index: number,
     image2: string,
     hashtags : string[],
-    timeStamp: string,
+    timeStamp: bigint,
 }
 
 interface SponsorPost extends Post {
