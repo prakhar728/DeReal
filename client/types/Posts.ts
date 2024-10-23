@@ -17,3 +17,10 @@ interface RegularPost extends Post {
 interface SponsorPost extends Post {
     sponsorLink: string
 }
+
+interface ContractPost {
+    content: string,
+    likes: BigInt,
+    timestamp: BigInt,
+    user: string
+}

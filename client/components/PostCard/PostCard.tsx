@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Heart } from "lucide-react";
 
@@ -35,6 +35,7 @@ export default function PostCard({
   hashtags,
   timeStamp,
 }: PostCardProps) {
+  const [mounted, setmounted] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(likes);
 
@@ -60,6 +61,11 @@ export default function PostCard({
     return `${Math.floor(diffInSeconds / 31536000)}y`;
   };
 
+  useEffect(() => {
+    setmounted(true);
+  }, []);
+
+  if (!mounted) return null;
   return (
     <Card className="mb-5 bg-gray-800 shadow-md">
       <CardHeader className="flex items-center space-x-4 p-3">
@@ -81,7 +87,9 @@ export default function PostCard({
         <div className="relative mb-3 w-full">
           {(image2 || image) && (
             <Image
-              src={image2 || image} // If image2 exists, use it; otherwise fallback to image
+              src={`data:image/png;base64,${
+                image2 || image
+              }`} // If image2 exists, use it; otherwise fallback to image
               alt="Post image"
               width={400}
               height={300}
@@ -91,7 +99,7 @@ export default function PostCard({
           {image2 && (
             <div className="absolute right-2.5 top-2.5 w-[30%]">
               <Image
-                src={image} // This renders the secondary image on top, as a small image
+                src={`data:image/png;base64,${image}`} // If image2 exists, use it; otherwise fallback to image
                 alt="Front Camera"
                 width={120}
                 height={90}

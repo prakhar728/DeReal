@@ -7,7 +7,8 @@ import UploadPhotoModal from "@/components/UploadModal/UploadModal";
 import ProfileUpdateModal from "@/components/ProfileUpdateModal/ProfileUpdateModal";
 import PostCard from "@/components/PostCard/PostCard";
 import SponsoredPostCard from "@/components/SponsoredCard/SponsoredCard";
-import { DEPLOYED_CONTRACT } from "@/lib/contract";
+import { CONTRACT_ABI, DEPLOYED_CONTRACT } from "@/lib/contract";
+import { useReadContract, useWriteContract } from "wagmi";
 
 const sponsoredPosts: SponsorPost[] = [
   {
@@ -48,15 +49,33 @@ const regularPostDummyData: RegularPost[] = [
   },
 ];
 
+const contractAddress = DEPLOYED_CONTRACT;
+
 export default function HomePage() {
+  const [mounted, setMounted] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [walletAddress, setWalletAddress] = useState("");
   const [userBio, setUserBio] = useState("");
   const [regularPosts, setRegularPosts] = useState<RegularPost[]>([]);
   const [triggerCapture, setTriggerCapture] = useState(false);
-
-  const contractAddress = DEPLOYED_CONTRACT;
   const [showProfileModal, setShowProfileModal] = useState(false);
+
+  const {
+    data: hash,
+    writeContract,
+    error: ErrorWhileWritingToContract,
+    isPending,
+  } = useWriteContract();
+
+  const {
+    data: posts,
+    error,
+    isPending: LoadingPosts,
+  } = useReadContract({
+    abi: CONTRACT_ABI,
+    address: contractAddress,
+    functionName: "getAllPosts",
+  });
 
   useEffect(() => {
     if (triggerCapture) setIsModalOpen(true);
@@ -89,9 +108,45 @@ export default function HomePage() {
 
   const interleavedPosts = interleavePosts();
 
-  const postPhotoOnChain = () => {
-    console.log("Dummy postPhotoOnChain function called");
+  const postPhotoOnChain = async (cid: string) => {
+    writeContract({
+      abi: CONTRACT_ABI,
+      functionName: "createPost",
+      address: contractAddress,
+      args: [cid],
+    });
   };
+
+  const fetchFromIpfs = async (post: ContractPost) => {
+    const res = await (
+      await fetch(
+        `https://plum-xerothermic-louse-526.mypinata.cloud/ipfs/${post.content}`
+      )
+    ).json();
+    console.log(res["0"]);
+    
+    res["userAddress"] = post["user"];
+    res["likes"] = post["likes"];
+    res["timeStamp"] = post["timestamp"];
+    res["image"] = await ((await fetch(`https://plum-xerothermic-louse-526.mypinata.cloud/ipfs/${res["0"]}`)).json());  
+
+    if (res["1"])
+      res["image2"] = await ((await fetch(`https://plum-xerothermic-louse-526.mypinata.cloud/ipfs/${res["1"]}`)).json());  
+
+    return res;
+  };
+
+  const populateRegularPosts = async (posts: ContractPost[]) => {
+    const regularPosts = await Promise.all(posts.map(fetchFromIpfs));
+  
+    setRegularPosts(regularPosts);
+  };
+
+  useEffect(() => {
+    if (posts && Array.isArray(posts)) {
+      populateRegularPosts(posts)
+    }
+  }, [posts]);
 
   const handleUpdate = (updatedUserBio: string) => {
     setUserBio(updatedUserBio);
@@ -101,6 +156,12 @@ export default function HomePage() {
   const likePost = (postId: string) => {
     console.log(`Dummy likePost function called for post ID: ${postId}`);
   };
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
 
   return (
     <div className="min-h-screen pb-16">
@@ -112,7 +173,9 @@ export default function HomePage() {
 
       <UploadPhotoModal
         isOpen={isModalOpen}
-        onClose={() => { setIsModalOpen(false) }}
+        onClose={() => {
+          setIsModalOpen(false);
+        }}
         postPhotoOnChain={postPhotoOnChain}
       />
 
@@ -132,7 +195,7 @@ export default function HomePage() {
         </header>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {interleavedPosts.map((post) =>
+          {interleavedPosts.map((post, index) =>
             "sponsorLink" in post ? (
               <SponsoredPostCard
                 key={post.id}
@@ -145,7 +208,7 @@ export default function HomePage() {
               />
             ) : (
               <PostCard
-                key={post.index}
+                key={index}
                 image={post.image}
                 image2={post.image2}
                 caption={post.caption}
@@ -176,15 +239,23 @@ export default function HomePage() {
                   }}
                   className="rounded-full w-12 h-12 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg relative overflow-hidden"
                 >
-                  <div className="absolute inset-0 bg-secondary/80" style={{
-                    clipPath: 'polygon(0 0, 25% 0, 25% 25%, 50% 25%, 50% 50%, 75% 50%, 75% 75%, 100% 75%, 100% 100%, 0 100%)'
-                  }}></div>
+                  <div
+                    className="absolute inset-0 bg-secondary/80"
+                    style={{
+                      clipPath:
+                        "polygon(0 0, 25% 0, 25% 25%, 50% 25%, 50% 50%, 75% 50%, 75% 75%, 100% 75%, 100% 100%, 0 100%)",
+                    }}
+                  ></div>
                   <Camera className="w-5 h-5 relative z-10" />
                   <span className="sr-only">Open camera</span>
                 </Button>
               </div>
             </div>
-            <Button variant="ghost" className="flex-1 text-primary-foreground" onClick={() => setShowProfileModal(true)}>
+            <Button
+              variant="ghost"
+              className="flex-1 text-primary-foreground"
+              onClick={() => setShowProfileModal(true)}
+            >
               <User className="w-6 h-6" />
               <span className="sr-only">Profile</span>
             </Button>
