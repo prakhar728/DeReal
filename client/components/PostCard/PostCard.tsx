@@ -14,6 +14,8 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { bigintToTimestamp } from "@/lib/utils";
 
+import Davatar from "@davatar/react";
+
 interface PostCardProps {
   image: string;
   image2?: string;
@@ -69,10 +71,11 @@ export default function PostCard({
   return (
     <Card className="mb-5 bg-gray-800 shadow-md">
       <CardHeader className="flex items-center space-x-4 p-3">
-        <Avatar className="h-8 w-8">
-          <AvatarImage src={userPfp} alt="User Profile" />
-          <AvatarFallback>{userAddress.slice(0, 2)}</AvatarFallback>
-        </Avatar>
+        <Davatar
+          size={24}
+          address={userAddress}
+          generatedAvatarType="jazzicon" // optional, 'jazzicon' or 'blockies'
+        />
         <div className="flex flex-col">
           <span className="text-sm font-bold text-gray-200 md:block">
             {shortenAddress(userAddress)}
@@ -87,9 +90,7 @@ export default function PostCard({
         <div className="relative mb-3 w-full">
           {(image2 || image) && (
             <Image
-              src={`data:image/png;base64,${
-                image2 || image
-              }`} // If image2 exists, use it; otherwise fallback to image
+              src={`data:image/png;base64,${image2 || image}`} // If image2 exists, use it; otherwise fallback to image
               alt="Post image"
               width={400}
               height={300}
