@@ -3,7 +3,7 @@ import { Home, Camera, User } from "lucide-react";
 import { Button } from "@/components/ui/button"; // Adjust the path according to your setup
 
 const Footer: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-background/10 backdrop-blur-sm">
@@ -23,7 +23,7 @@ const Footer: React.FC = () => {
             <div className="rounded-full p-1 bg-primary/20">
               <Button
                 onClick={() => {
-                  setIsModalOpen(true);
+                  // setIsModalOpen(true);
                   console.log("Opening");
                 }}
                 className="rounded-full w-12 h-12 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg relative overflow-hidden"

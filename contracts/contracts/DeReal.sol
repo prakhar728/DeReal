@@ -38,19 +38,16 @@ contract DeReal {
         _;
     }
 
-    // Register a new user with an optional bio
     function registerUser(string memory _bio, address _user) public {
         users[_user] = User({bio: _bio});
 
         emit UserRegistered(_user);
     }
 
-    // Get user details for the caller
     function getUser() public view returns (User memory) {
         return users[msg.sender];
     }
 
-    // Update the bio of the user
     function updateBio(string memory _bio) public {
         users[msg.sender].bio = _bio;
 

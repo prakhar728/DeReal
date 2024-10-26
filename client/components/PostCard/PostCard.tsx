@@ -14,8 +14,6 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { bigintToTimestamp, generateRandomImage } from "@/lib/utils";
 
-import Davatar from "@davatar/react";
-
 interface PostCardProps {
   image: string;
   image2?: string;
@@ -40,6 +38,8 @@ export default function PostCard({
   const [mounted, setmounted] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(likes);
+
+  console.log(userPfp);
 
   const handleLike = () => {
     setIsLiked((prev) => !prev);
@@ -70,15 +70,21 @@ export default function PostCard({
   if (!mounted) return null;
   return (
     <Card className="mb-5 bg-gray-800 shadow-md">
-      <CardHeader className="flex items-center space-x-4 p-3">
-      <Avatar className="h-8 w-8">
-          <AvatarImage src={generateRandomImage(userAddress)} alt="User Profile" />
-          <AvatarFallback>{userAddress.slice(0, 2)}</AvatarFallback>
-        </Avatar>
-        <div className="flex flex-col">
+      <CardHeader className="flex flex-row justify-between items-center p-3">
+        <div className="flex justify-center items-center">
+          <Avatar className="h-8 w-8">
+            <AvatarImage
+              src={generateRandomImage(userAddress)}
+              alt="User Profile"
+            />
+            <AvatarFallback>{userAddress.slice(0, 2)}</AvatarFallback>
+          </Avatar>
           <span className="text-sm font-bold text-gray-200 md:block">
             {shortenAddress(userAddress)}
           </span>
+        </div>
+        
+        <div className="flex items-center">
           <span className="text-xs text-gray-400">
             {formatRelativeTime(timeStamp)}
           </span>
@@ -99,7 +105,7 @@ export default function PostCard({
           {image2 && (
             <div className="absolute right-2.5 top-2.5 w-[30%]">
               <Image
-                src={`data:image/png;base64,${image}`} // If image2 exists, use it; otherwise fallback to image
+                src={`data:image/png;base64,${image2}`} 
                 alt="Front Camera"
                 width={120}
                 height={90}
@@ -113,7 +119,6 @@ export default function PostCard({
 
       <CardFooter className="flex items-center justify-between p-3">
         <Button
-          variant="ghost"
           size="sm"
           className="flex items-center space-x-1 p-0 text-gray-400 hover:text-gray-200"
           onClick={handleLike}

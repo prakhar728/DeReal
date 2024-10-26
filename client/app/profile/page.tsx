@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
-import { Edit, Settings } from "lucide-react";
+import { Edit } from "lucide-react";
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { bigintToTimestamp, generateRandomImage } from "@/lib/utils";
+import { generateRandomImage } from "@/lib/utils";
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
 import Header from "@/components/Header/Header";
 import ProfileUpdateModal from "@/components/ProfileUpdateModal/ProfileUpdateModal";
@@ -37,8 +36,6 @@ export default function ProfilePage() {
 
   const {
     data: posts,
-    error,
-    isPending: LoadingPosts,
   } = useReadContract({
     abi: CONTRACT_ABI,
     address: contractAddress,
@@ -46,9 +43,7 @@ export default function ProfilePage() {
   });
 
   const {
-    data: hash,
     writeContract,
-    error: ErrorWhileWritingToContract,
     isPending,
   } = useWriteContract();
 
@@ -78,14 +73,14 @@ export default function ProfilePage() {
     if (res["userAddress"] == address)
       return res;
   };
-
-  const populateRegularPosts = async (posts: ContractPost[]) => {
-    const regularPosts = await Promise.all(posts.map(fetchFromIpfs));
-
-    setRegularPosts(regularPosts);
-  };
-
+  
   useEffect(() => {
+    const populateRegularPosts = async (posts: ContractPost[]) => {
+      const regularPosts = await Promise.all(posts.map(fetchFromIpfs));
+  
+      setRegularPosts(regularPosts);
+    };
+
     if (posts && Array.isArray(posts)) {
       populateRegularPosts(posts);
     }

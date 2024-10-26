@@ -1,6 +1,6 @@
 "use client";
 
-import React, { MouseEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./HomePage.module.css";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,9 +21,8 @@ const HomePage: React.FC = () => {
 
   const techStack = [
     { name: "Solidity", logo: "/solidity.png" },
-    { name: "Pyth Network", logo: "/pyth.png" },
-    { name: "Dynamic SDK", logo: "/dynamic.png" },
-    { name: "ChainLink Automation", logo: "/chainlink.png" },
+    { name: "Near Chain", logo: "/near.png" },
+    { name: "Aurora Chain", logo: "/aurora.png" },
   ];
 
   useEffect(() => {
@@ -80,6 +79,7 @@ const HomePage: React.FC = () => {
                     alt={feature.name}
                     width={128}
                     height={128}
+                    quality={100}
                     className={styles.imageCardImage}
                   />
                   <p className={styles.imageCardText}>{feature.name}</p>
@@ -90,7 +90,7 @@ const HomePage: React.FC = () => {
         </section>
 
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Technology Stack</h2>
+          <h2 className={styles.sectionTitle}>Built using</h2>
           <div className={styles.techGrid}>
             {techStack.map((tech, index) => (
               <div key={index} className={styles.techCard}>
@@ -100,6 +100,7 @@ const HomePage: React.FC = () => {
                   width={64}
                   height={64}
                   className={styles.techCardImage}
+                  quality={100}
                 />
                 <p className={styles.techCardText}>{tech.name}</p>
               </div>

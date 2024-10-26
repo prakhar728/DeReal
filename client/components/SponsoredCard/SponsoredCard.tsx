@@ -1,99 +1,120 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { Heart, ExternalLink } from 'lucide-react'
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Heart, ExternalLink } from "lucide-react";
 
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { generateRandomImage } from "@/lib/utils";
 
-interface SponsoredPostCardProps {
-  image: string
-  caption: string
-  likes: number
-  sponsorLink: string
-  userPfp: string
-  userAddress: string
+interface SponsoredCardProps {
+  image: string;
+  caption: string;
+  likes: number;
+  sponsorLink: string;
+  userPfp: string;
+  userAddress: string;
+  hashtags: string[];
 }
 
-export default function SponsoredPostCard({
+export default function SponsoredCard({
   image,
   caption,
   likes,
   sponsorLink,
   userPfp,
   userAddress,
-}: SponsoredPostCardProps) {
-  const [isLiked, setIsLiked] = useState(false)
-  const [likeCount, setLikeCount] = useState(likes)
+  hashtags,
+}: SponsoredCardProps) {
+  const [mounted, setMounted] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(likes);
 
   const handleLike = () => {
-    setIsLiked((prev) => !prev)
-    setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1))
-  }
+    setIsLiked((prev) => !prev);
+    setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
+  };
 
   const shortenAddress = (address: string) => {
-    return `${address.slice(0, 6)}...${address.slice(-4)}`
-  }
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  };
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
 
   return (
-    <Card className="relative mb-6 overflow-hidden bg-gray-800 transition-transform duration-300 hover:-translate-y-1">
-      <div className="absolute -left-8 top-2.5 z-10 -rotate-45 bg-primary px-8 py-0.5 text-base text-primary-foreground shadow-md">
-        <span className="border-2 border-secondary">Sponsored</span>
+    <Card className="mb-5 bg-gray-700 shadow-md relative">
+      <div className="absolute left-0 top-0 z-10 bg-primary px-2 py-1 text-xs font-semibold text-primary-foreground shadow-md">
+        Sponsored
       </div>
-
-      <CardHeader className="p-0">
-        <div className="relative h-48 w-full">
-          <Image
-            src={image}
-            alt="Sponsored Post"
-            fill
-            className="rounded-t-lg object-cover"
-          />
-        </div>
-      </CardHeader>
-
-      <CardContent className="p-4">
-        <p className="text-base text-gray-200">{caption}</p>
-
-        <div className="mt-2 flex items-center">
-          <Avatar className="h-8 w-8 border border-gray-600">
-            <AvatarImage src={userPfp} alt="User Profile" />
-            <AvatarFallback className="bg-gray-700 text-gray-200">{userAddress.slice(0, 2)}</AvatarFallback>
+      <CardHeader className="flex flex-row justify-between items-center p-3">
+        <div className="flex justify-center items-center">
+          <Avatar className="h-8 w-8">
+            <AvatarImage
+              src={generateRandomImage(userAddress)}
+              alt="User Profile"
+            />
+            <AvatarFallback>{userAddress.slice(0, 2)}</AvatarFallback>
           </Avatar>
-          <span className="ml-2 text-sm text-gray-400">
+          <span className="text-sm font-bold text-gray-200 ml-2 md:block">
             {shortenAddress(userAddress)}
           </span>
         </div>
-      </CardContent>
-
-      <CardFooter className="flex items-center p-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="mr-2 p-0 text-gray-400 hover:text-gray-200"
-          onClick={handleLike}
-          aria-label={isLiked ? 'Unlike' : 'Like'}
-        >
-          <Heart
-            className={`h-6 w-6 ${isLiked ? 'fill-primary text-primary' : ''}`}
-          />
-        </Button>
-
-        <span className="text-sm text-gray-400">{likeCount}</span>
 
         <Link
           href={sponsorLink}
           target="_blank"
           rel="noopener noreferrer"
-          className="ml-auto text-gray-400 hover:text-gray-200"
+          className="text-gray-400 hover:text-gray-200"
           aria-label="Visit sponsor's website"
         >
-          <ExternalLink className="h-6 w-6" />
+          <ExternalLink className="h-5 w-5" />
         </Link>
+      </CardHeader>
+
+      <CardContent className="p-3">
+        <div className="relative mb-3 w-full">
+          <Image
+            src={image}
+            alt="Sponsored image"
+            width={400}
+            height={300}
+            className="w-full rounded"
+          />
+        </div>
+        <p className="mt-2 text-base text-gray-200">{caption}</p>
+      </CardContent>
+
+      <CardFooter className="flex items-center justify-between p-3">
+        <Button
+          size="sm"
+          className="flex items-center space-x-1 p-0 text-gray-400 hover:text-gray-200"
+          onClick={handleLike}
+        >
+          <Heart
+            className={`h-5 w-5 ${isLiked ? "fill-primary text-primary" : ""}`}
+          />
+          <span className="text-sm">{likeCount}</span>
+        </Button>
+        <div className="flex flex-wrap">
+          {hashtags && hashtags.map((tag, index) => (
+            <span key={index} className="mr-2 text-xs text-gray-400">
+              #{tag}
+            </span>
+          ))}
+        </div>
       </CardFooter>
     </Card>
-  )
+  );
 }

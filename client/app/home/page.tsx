@@ -1,10 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Camera, Home, User } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import UploadPhotoModal from "@/components/UploadModal/UploadModal";
-import ProfileUpdateModal from "@/components/ProfileUpdateModal/ProfileUpdateModal";
 import PostCard from "@/components/PostCard/PostCard";
 import SponsoredPostCard from "@/components/SponsoredCard/SponsoredCard";
 import { CONTRACT_ABI, DEPLOYED_CONTRACT } from "@/lib/contract";
@@ -34,52 +31,29 @@ const sponsoredPosts: SponsorPost[] = [
   },
 ];
 
-const regularPostDummyData: RegularPost[] = [
-  {
-    index: 0,
-    id: "s1",
-    image:
-      "https://m.media-amazon.com/images/I/81dwDTLOJLL._AC_UF894,1000_QL80_.jpg",
-    image2:
-      "https://m.media-amazon.com/images/I/81dwDTLOJLL._AC_UF894,1000_QL80_.jpg",
-    caption: "Check out our new 8-bit inspired game!",
-    likes: 45,
-    userAddress: "0x12312321313134555",
-    hashtags: ["hash1", "hash2"],
-    userPfp: "",
-    timeStamp: BigInt(0),
-  },
-];
-
 const contractAddress = DEPLOYED_CONTRACT;
 
 export default function HomePage() {
   const [mounted, setMounted] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [walletAddress, setWalletAddress] = useState("");
-  const [userBio, setUserBio] = useState("");
   const [regularPosts, setRegularPosts] = useState<RegularPost[]>([]);
-  const [triggerCapture, setTriggerCapture] = useState(false);
+  // const [triggerCapture, setTriggerCapture] = useState(false);
 
   const {
     writeContract,
-    error: ErrorWhileWritingToContract,
-    isPending,
   } = useWriteContract();
 
   const {
     data: posts,
-    error,
-    isPending: LoadingPosts,
   } = useReadContract({
     abi: CONTRACT_ABI,
     address: contractAddress,
     functionName: "getAllPosts",
   });
 
-  useEffect(() => {
-    if (triggerCapture) setIsModalOpen(true);
-  }, [triggerCapture]);
+  // useEffect(() => {
+  //   if (triggerCapture) setIsModalOpen(true);
+  // }, [triggerCapture]);
 
   const getRandomSponsoredPost = () => {
     const randomIndex = Math.floor(Math.random() * sponsoredPosts.length);
@@ -143,26 +117,21 @@ export default function HomePage() {
     return res;
   };
 
-  const populateRegularPosts = async (posts: ContractPost[]) => {
-    const regularPosts = await Promise.all(posts.map(fetchFromIpfs));
-
-    setRegularPosts(regularPosts);
-  };
-
   useEffect(() => {
+    const populateRegularPosts = async (posts: ContractPost[]) => {
+      const regularPosts = await Promise.all(posts.map(fetchFromIpfs));
+  
+      setRegularPosts(regularPosts);
+    };
+
     if (posts && Array.isArray(posts)) {
       populateRegularPosts(posts);
     }
   }, [posts]);
 
-  const handleUpdate = (updatedUserBio: string) => {
-    setUserBio(updatedUserBio);
-    console.log("Dummy handleUpdate function called with:", updatedUserBio);
-  };
-
-  const likePost = (postId: string) => {
-    console.log(`Dummy likePost function called for post ID: ${postId}`);
-  };
+  // const likePost = (postId: string) => {
+  //   console.log(`Dummy likePost function called for post ID: ${postId}`);
+  // };
 
   useEffect(() => {
     setMounted(true);
