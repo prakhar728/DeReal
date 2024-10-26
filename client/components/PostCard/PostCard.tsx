@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { bigintToTimestamp } from "@/lib/utils";
+import { bigintToTimestamp, generateRandomImage } from "@/lib/utils";
 
 import Davatar from "@davatar/react";
 
@@ -71,11 +71,10 @@ export default function PostCard({
   return (
     <Card className="mb-5 bg-gray-800 shadow-md">
       <CardHeader className="flex items-center space-x-4 p-3">
-        <Davatar
-          size={24}
-          address={userAddress}
-          generatedAvatarType="jazzicon" // optional, 'jazzicon' or 'blockies'
-        />
+      <Avatar className="h-8 w-8">
+          <AvatarImage src={generateRandomImage(userAddress)} alt="User Profile" />
+          <AvatarFallback>{userAddress.slice(0, 2)}</AvatarFallback>
+        </Avatar>
         <div className="flex flex-col">
           <span className="text-sm font-bold text-gray-200 md:block">
             {shortenAddress(userAddress)}

@@ -30,7 +30,10 @@ const modal = createAppKit({
   defaultNetwork: mainnet,
   metadata: metadata,
   features: {
-    analytics: true // Optional - defaults to your Cloud configuration
+    analytics: true, // Optional - defaults to your Cloud configuration
+    email: true, // default to true
+    socials: ['google'],
+    emailShowWallets: true, // default to true
   },
   includeWalletIds: [
     '76260019aec5a3c44dd2421bf78e80f71a6c090d932c413a287193ed79450694', // Rainbow

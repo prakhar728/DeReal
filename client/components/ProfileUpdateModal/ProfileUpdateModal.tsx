@@ -3,12 +3,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { X, Loader2 } from 'lucide-react';
+import { generateRandomImage } from '@/lib/utils';
 
 interface ProfileUpdateModalProps {
-  walletAddress: string;
+  walletAddress: string | undefined | `0x${string}`;
   onUpdate: (bio: string) => void;
-  userBio?: string;
+  userBio?: any;
   onClose: () => void;
+  isPending: boolean;
 }
 
 const ProfileUpdateModal: React.FC<ProfileUpdateModalProps> = ({
@@ -16,18 +18,13 @@ const ProfileUpdateModal: React.FC<ProfileUpdateModalProps> = ({
   onUpdate,
   userBio = '',
   onClose,
+  isPending
 }) => {
   const [bio, setBio] = useState(userBio);
-  const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState('');
   const [profileImage, setProfileImage] = useState('');
 
   useEffect(() => {
-    const generateRandomImage = (address: string) => {
-      // Generate a unique seed based on the wallet address
-      const seed = address.slice(2, 10);
-      return `https://api.dicebear.com/9.x/pixel-art/svg?seed=${seed}`;
-    };
     setProfileImage(generateRandomImage(walletAddress));
   }, [walletAddress]);
 
@@ -45,12 +42,10 @@ const ProfileUpdateModal: React.FC<ProfileUpdateModalProps> = ({
 
   const handleUpdate = async () => {
     try {
-      setIsUpdating(true);
       onUpdate(bio);
     } catch (err) {
       setError('Failed to update profile. Please try again.');
     } finally {
-      setIsUpdating(false);
     }
   };
 
@@ -104,9 +99,9 @@ const ProfileUpdateModal: React.FC<ProfileUpdateModalProps> = ({
         <button
           className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handleUpdate}
-          disabled={isUpdating || !!error}
+          disabled={!!error}
         >
-          {isUpdating ? (
+          {isPending ? (
             <>
               <Loader2 className="mr-2 h-5 w-5 animate-spin" />
               Updating...
