@@ -20,7 +20,7 @@ interface SponsorPost extends Post {
 
 interface ContractPost {
     content: string,
-    likes: BigInt,
+    likedBy: string[],
     timestamp: BigInt,
     user: string
 }

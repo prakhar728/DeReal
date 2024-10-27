@@ -87,7 +87,7 @@ export default function HomePage() {
     ).json();
 
     res["userAddress"] = post["user"];
-    res["likes"] = post["likes"];
+    res["likes"] = post["likedBy"].length;
     res["timeStamp"] = post["timestamp"];
     res["image"] = await (
       await fetch(
@@ -146,7 +146,10 @@ export default function HomePage() {
         </header>
 
         {isLoading ? (
-          <h2 className="w-100 text-center"> Digging through the chains to posts for you!</h2>
+          <h2 className="w-100 text-center">
+            {" "}
+            Digging through the chains to posts for you!
+          </h2>
         ) : interleavedPosts.length == 0 ? (
           <h2 className="w-100 text-center">No posts to show yet!</h2>
         ) : (
@@ -154,7 +157,7 @@ export default function HomePage() {
             {interleavedPosts.map((post, index) =>
               "sponsorLink" in post ? (
                 <SponsoredPostCard
-                  key={post.id}
+                  key={index}
                   image={post.image}
                   caption={post.caption}
                   likes={post.likes}

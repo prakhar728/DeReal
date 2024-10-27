@@ -53,7 +53,8 @@ export default function ProfilePage() {
     ).json();
 
     res["userAddress"] = post["user"];
-    res["likes"] = post["likes"];
+    res["likes"] = post["likedBy"].length;
+
     res["timeStamp"] = post["timestamp"];
     res["image"] = await (
       await fetch(
@@ -76,6 +77,7 @@ export default function ProfilePage() {
       const regularPosts = await Promise.all(posts.map(fetchFromIpfs));
 
       setRegularPosts(regularPosts);
+      setLoading(false);
     };
 
     if (posts && Array.isArray(posts)) {

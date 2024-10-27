@@ -1,12 +1,25 @@
 import React, { useState } from "react";
 import { Home, Camera, User } from "lucide-react";
 import { Button } from "@/components/ui/button"; // Adjust the path according to your setup
+import { useWatchContractEvent } from "wagmi";
+import { CONTRACT_ABI, DEPLOYED_CONTRACT } from "@/lib/contract";
 
 interface FooterProps {
   setIsModalOpen: (state: boolean) => void
 }
 
+const contractAddress = DEPLOYED_CONTRACT;
+
 const Footer: React.FC<FooterProps> = ({ setIsModalOpen }: FooterProps) => {
+
+  // useWatchContractEvent({
+  //   address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+  //   abi: CONTRACT_ABI,
+  //   eventName: 'Transfer',
+  //   onLogs(logs) {
+  //     console.log('New logs!', logs)
+  //   },
+  // })
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-background/10 backdrop-blur-sm">
