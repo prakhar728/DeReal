@@ -23,11 +23,11 @@ export default function ProfilePage() {
   const [regularPosts, setRegularPosts] = useState<RegularPost[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setLoading] = useState(true);
+  const [hasTimer, sethasTimer] = useState(false);
   const { address } = useAccount();
 
   useEffect(() => {
     setMounted(true);
-    // Simulating fetching posts
   }, []);
 
   const { data: userBio, isPending: LoadingBio } = useReadContract({
@@ -106,6 +106,7 @@ export default function ProfilePage() {
         onClose={() => {
           setIsModalOpen(false);
         }}
+        hasTimer={hasTimer}
       />
       <Card className="mb-8 bg-gray-800 text-gray-200">
         <CardHeader className="flex flex-col items-center space-y-4 sm:flex-row sm:justify-between sm:space-y-0">
@@ -171,7 +172,8 @@ export default function ProfilePage() {
         )}
       </div>
 
-      <Footer setIsModalOpen={setIsModalOpen} />
+      <Footer setIsModalOpen={setIsModalOpen} sethasTimer={sethasTimer} />
+
 
       {openProfileEditModal && (
         <ProfileUpdateModal

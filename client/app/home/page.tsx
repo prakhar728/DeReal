@@ -38,9 +38,8 @@ export default function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [regularPosts, setRegularPosts] = useState<RegularPost[]>([]);
   const [isLoading, setLoading] = useState(true);
+  const [hasTimer, sethasTimer] = useState(false);
   // const [triggerCapture, setTriggerCapture] = useState(false);
-
-  const { writeContract } = useWriteContract();
 
   const { data: posts } = useReadContract({
     abi: CONTRACT_ABI,
@@ -137,6 +136,7 @@ export default function HomePage() {
         onClose={() => {
           setIsModalOpen(false);
         }}
+        hasTimer={hasTimer}
       />
 
       <main className="container mx-auto px-4">
@@ -182,7 +182,7 @@ export default function HomePage() {
           </div>
         )}
       </main>
-      <Footer setIsModalOpen={setIsModalOpen} />
+      <Footer setIsModalOpen={setIsModalOpen} sethasTimer={sethasTimer} />
     </div>
   );
 }

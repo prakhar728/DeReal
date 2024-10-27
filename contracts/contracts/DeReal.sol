@@ -113,4 +113,8 @@ contract DeReal {
         require(_postId > 0 && _postId <= postCount, "No such post exists");
         return posts[_postId];
     }
+
+    function triggerCamera() external {
+        emit EventTriggered(msg.sender, block.timestamp);
+    }
 }

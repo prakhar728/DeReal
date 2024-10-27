@@ -5,21 +5,25 @@ import { useWatchContractEvent } from "wagmi";
 import { CONTRACT_ABI, DEPLOYED_CONTRACT } from "@/lib/contract";
 
 interface FooterProps {
-  setIsModalOpen: (state: boolean) => void
+  setIsModalOpen: (state: boolean) => void;
+  sethasTimer: (state: boolean) => void;
 }
 
 const contractAddress = DEPLOYED_CONTRACT;
 
-const Footer: React.FC<FooterProps> = ({ setIsModalOpen }: FooterProps) => {
-
-  // useWatchContractEvent({
-  //   address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-  //   abi: CONTRACT_ABI,
-  //   eventName: 'Transfer',
-  //   onLogs(logs) {
-  //     console.log('New logs!', logs)
-  //   },
-  // })
+const Footer: React.FC<FooterProps> = ({
+  setIsModalOpen,
+  sethasTimer,
+}: FooterProps) => {
+  useWatchContractEvent({
+    address: contractAddress,
+    abi: CONTRACT_ABI,
+    eventName: "EventTriggered",
+    onLogs(logs) {
+      setIsModalOpen(true);
+      sethasTimer(true);
+    },
+  });
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-background/10 backdrop-blur-sm">
@@ -40,6 +44,8 @@ const Footer: React.FC<FooterProps> = ({ setIsModalOpen }: FooterProps) => {
               <Button
                 onClick={() => {
                   setIsModalOpen(true);
+                  sethasTimer(false);
+
                   console.log("Opening");
                 }}
                 className="rounded-full w-12 h-12 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg relative overflow-hidden"

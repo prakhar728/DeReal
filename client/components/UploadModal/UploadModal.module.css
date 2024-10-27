@@ -1,6 +1,6 @@
 /* UploadModal.module.css */
 .modalOverlay {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     right: 0;
@@ -160,4 +160,7 @@
     text-align: center;
     margin-bottom: 1rem;
     color: var(--text-primary, #ffffff);
+    display: flex;
+    justify-content: space-between;
+    padding:0 2rem;
   }

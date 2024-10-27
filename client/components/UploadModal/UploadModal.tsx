@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Webcam from "react-webcam";
-import { Camera } from "lucide-react";
+import { Camera, Infinity } from "lucide-react";
 
 import { uploadJSONToIPFS } from "@/lib/ipfs";
 import styles from "./UploadModal.module.css";
@@ -12,6 +12,7 @@ import { CONTRACT_ABI, DEPLOYED_CONTRACT } from "@/lib/contract";
 interface UploadPhotoModalProps {
   isOpen: boolean;
   onClose: () => void;
+  hasTimer: boolean;
 }
 
 const contractAddress = DEPLOYED_CONTRACT;
@@ -19,13 +20,14 @@ const contractAddress = DEPLOYED_CONTRACT;
 const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({
   isOpen,
   onClose,
+  hasTimer,
 }) => {
   const [caption, setCaption] = useState("");
   const [hashtags, setHashtags] = useState("");
   const [capturedImages, setCapturedImages] = useState<string[]>([]);
   const [capturing, setCapturing] = useState(false);
   const [facingMode, setFacingMode] = useState<"user" | "environment">("user");
-  const [timeLeft, setTimeLeft] = useState(120);
+  const [timeLeft, setTimeLeft] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const webcamRef = useRef<Webcam>(null);
 
@@ -39,11 +41,11 @@ const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({
   useEffect(() => {
     let timer: NodeJS.Timeout;
     // Only countdown if modal is open and we're not submitting/confirming
-    if (isOpen && timeLeft > 0 && !isSubmitting && !isConfirming) {
+    if (isOpen && timeLeft > 0 && !isSubmitting && !isConfirming && hasTimer) {
       timer = setInterval(() => {
         setTimeLeft((prevTime) => prevTime - 1);
       }, 1000);
-    } else if (timeLeft === 0) {
+    } else if (timeLeft === 0 && hasTimer) {
       onClose();
     }
     return () => clearInterval(timer);
@@ -59,7 +61,8 @@ const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({
 
   useEffect(() => {
     if (isOpen) {
-      setTimeLeft(120);
+      if (hasTimer) setTimeLeft(120);
+
       setCapturedImages([]);
       setCaption("");
       setHashtags("");
@@ -145,8 +148,15 @@ const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({
       <div className={styles.modalContent}>
         <h2>Upload Photo</h2>
         <div className={styles.timer}>
-          Time left: {Math.floor(timeLeft / 60)}:
-          {(timeLeft % 60).toString().padStart(2, "0")}
+          Time left
+          {hasTimer ? (
+            <div>
+              {Math.floor(timeLeft / 60)} :
+              {(timeLeft % 60).toString().padStart(2, "0")}
+            </div>
+          ) : (
+            <Infinity />
+          )}
         </div>
 
         <form onSubmit={handleSubmit}>
