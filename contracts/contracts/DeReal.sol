@@ -12,7 +12,7 @@ contract DeReal {
         address user;
         string content;
         uint256 timestamp;
-        uint256 likes;
+        address[] likedBy; // Array of users who liked the post
     }
 
     mapping(address => User) public users;
@@ -22,15 +22,15 @@ contract DeReal {
 
     event NextEventScheduled(uint256 timestamp);
     event EventTriggered(address triggeredBy, uint256 timestamp);
-
     event UserRegistered(address user);
     event UserBioUpdated(address user);
     event PostCreated(address user, uint256 postId);
-    event Liked(address user, uint256 postId);
+    event LikeToggled(address user, uint256 postId, bool isLiked);
     event CamerasTriggered(address triggeredBy, uint256 timestamp);
 
     constructor() payable {
         owner = msg.sender;
+        nextEventTimestamp = block.timestamp + 1 days;
     }
 
     modifier onlyOwner() {
@@ -38,10 +38,13 @@ contract DeReal {
         _;
     }
 
-    function registerUser(string memory _bio, address _user) public {
-        users[_user] = User({bio: _bio});
-
-        emit UserRegistered(_user);
+    function registerUser(string memory _bio) public {
+        require(
+            bytes(users[msg.sender].bio).length == 0,
+            "User already registered"
+        );
+        users[msg.sender] = User({bio: _bio});
+        emit UserRegistered(msg.sender);
     }
 
     function getUser() public view returns (User memory) {
@@ -50,7 +53,6 @@ contract DeReal {
 
     function updateBio(string memory _bio) public {
         users[msg.sender].bio = _bio;
-
         emit UserBioUpdated(msg.sender);
     }
 
@@ -64,47 +66,51 @@ contract DeReal {
             user: msg.sender,
             content: _ipfsHash,
             timestamp: block.timestamp,
-            likes: 0
+            likedBy: new address[](0x0)
         });
-
         emit PostCreated(msg.sender, postCount);
     }
 
     function likePost(uint256 _postId) public {
-        require(
-            _postId > 0 && _postId <= postCount,
-            "Invalid post ID"
-        );
-        posts[_postId].likes++;
-        emit Liked(posts[_postId].user, _postId);
-    }
+        require(_postId > 0 && _postId <= postCount, "Invalid post ID");
 
-    // Manual function to trigger camera events
-    function triggerCameras() public onlyOwner {
-        emit EventTriggered(msg.sender, block.timestamp);
+        Post storage post = posts[_postId];
+        bool isLiked = false;
+
+        // Check if the user already liked the post
+        for (uint256 i = 0; i < post.likedBy.length; i++) {
+            if (post.likedBy[i] == msg.sender) {
+                // Remove the user from the likedBy array
+                post.likedBy[i] = post.likedBy[post.likedBy.length - 1];
+                post.likedBy.pop();
+                isLiked = true;
+                break;
+            }
+        }
+
+        // If not liked, add the user to likedBy array
+        if (!isLiked) {
+            post.likedBy.push(msg.sender);
+        }
+
+        emit LikeToggled(msg.sender, _postId, !isLiked);
     }
 
     function getLikes(uint256 _postId) public view returns (uint256) {
-        require(
-            _postId > 0 && _postId <= postCount,
-            "Invalid post ID"
-        );
-        return posts[_postId].likes;
+        require(_postId > 0 && _postId <= postCount, "Invalid post ID");
+        return posts[_postId].likedBy.length;
     }
 
     function getAllPosts() external view returns (Post[] memory) {
         Post[] memory _posts = new Post[](postCount);
-
         for (uint256 i = 1; i <= postCount; i++) {
             _posts[i - 1] = posts[i];
         }
-
         return _posts;
     }
 
     function getPost(uint256 _postId) external view returns (Post memory) {
-        require(_postId < postCount, "No such post exists");
-
+        require(_postId > 0 && _postId <= postCount, "No such post exists");
         return posts[_postId];
     }
 }

@@ -7,17 +7,19 @@ import { Camera } from "lucide-react";
 
 import { uploadJSONToIPFS } from "@/lib/ipfs";
 import styles from "./UploadModal.module.css";
+import { useWriteContract } from "wagmi";
+import { CONTRACT_ABI, DEPLOYED_CONTRACT } from "@/lib/contract";
 
 interface UploadPhotoModalProps {
   isOpen: boolean;
   onClose: () => void;
-  postPhotoOnChain: (hash: string) => void;
 }
+
+const contractAddress = DEPLOYED_CONTRACT;
 
 const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({
   isOpen,
   onClose,
-  postPhotoOnChain,
 }) => {
   const [caption, setCaption] = useState("");
   const [hashtags, setHashtags] = useState("");
@@ -26,6 +28,8 @@ const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({
   const [facingMode, setFacingMode] = useState<"user" | "environment">("user");
   const [timeLeft, setTimeLeft] = useState(120);
   const webcamRef = useRef<Webcam>(null);
+
+  const { writeContract, isPaused: isUploadingPhoto } = useWriteContract();
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -42,6 +46,9 @@ const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({
   useEffect(() => {
     if (isOpen) {
       setTimeLeft(120);
+      setCapturedImages([]);
+      setCaption("");
+      setHashtags("");
     }
   }, [isOpen]);
 
@@ -96,7 +103,17 @@ const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({
     setCapturedImages([]);
     setCaption("");
     setHashtags("");
-    onClose();
+  };
+
+  const postPhotoOnChain = async (cid: string) => {
+    writeContract(
+      {
+        abi: CONTRACT_ABI,
+        functionName: "createPost",
+        address: contractAddress,
+        args: [cid],
+      },
+    );
   };
 
   if (!isOpen) return null;

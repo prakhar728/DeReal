@@ -13,6 +13,7 @@ import ProfileUpdateModal from "@/components/ProfileUpdateModal/ProfileUpdateMod
 import { CONTRACT_ABI, DEPLOYED_CONTRACT } from "@/lib/contract";
 import PostCard from "@/components/PostCard/PostCard";
 import Footer from "@/components/Footer/Footer";
+import UploadPhotoModal from "@/components/UploadModal/UploadModal";
 
 const contractAddress = DEPLOYED_CONTRACT;
 
@@ -20,6 +21,8 @@ export default function ProfilePage() {
   const [mounted, setMounted] = useState(false);
   const [openProfileEditModal, setopenProfileEditModal] = useState(false);
   const [regularPosts, setRegularPosts] = useState<RegularPost[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setLoading] = useState(true);
   const { address } = useAccount();
 
   useEffect(() => {
@@ -34,18 +37,13 @@ export default function ProfilePage() {
     args: [address],
   });
 
-  const {
-    data: posts,
-  } = useReadContract({
+  const { data: posts } = useReadContract({
     abi: CONTRACT_ABI,
     address: contractAddress,
     functionName: "getAllPosts",
   });
 
-  const {
-    writeContract,
-    isPending,
-  } = useWriteContract();
+  const { writeContract, isPending } = useWriteContract();
 
   const fetchFromIpfs = async (post: ContractPost) => {
     const res = await (
@@ -69,15 +67,14 @@ export default function ProfilePage() {
           `https://plum-xerothermic-louse-526.mypinata.cloud/ipfs/${res["1"]}`
         )
       ).json();
-    
-    if (res["userAddress"] == address)
-      return res;
+
+    if (res["userAddress"] == address) return res;
   };
-  
+
   useEffect(() => {
     const populateRegularPosts = async (posts: ContractPost[]) => {
       const regularPosts = await Promise.all(posts.map(fetchFromIpfs));
-  
+
       setRegularPosts(regularPosts);
     };
 
@@ -102,6 +99,12 @@ export default function ProfilePage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <Header />
+      <UploadPhotoModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+        }}
+      />
       <Card className="mb-8 bg-gray-800 text-gray-200">
         <CardHeader className="flex flex-col items-center space-y-4 sm:flex-row sm:justify-between sm:space-y-0">
           <div className="flex items-center space-x-4">
@@ -142,24 +145,32 @@ export default function ProfilePage() {
       </Card>
 
       <h2 className="mb-4 text-xl font-bold text-gray-200">My Posts</h2>
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {regularPosts && regularPosts.map((post, index) => (
-           <PostCard
-           key={index}
-           image={post.image}
-           image2={post.image2}
-           caption={post.caption}
-           likes={post.likes}
-           userAddress={post.userAddress}
-           hashtags={post.hashtags}
-           userPfp={post.userPfp}
-           timeStamp={post.timeStamp}
-         />
-        ))}
+        {isLoading ? (
+          <h2> Searching for your posts....</h2>
+        ) : regularPosts.length == 0 ? (
+          <h2> No posts to show yet!</h2>
+        ) : (
+          regularPosts &&
+          regularPosts.map((post, index) => (
+            <PostCard
+              key={index}
+              image={post.image}
+              image2={post.image2}
+              caption={post.caption}
+              likes={post.likes}
+              userAddress={post.userAddress}
+              hashtags={post.hashtags}
+              userPfp={post.userPfp}
+              timeStamp={post.timeStamp}
+            />
+          ))
+        )}
       </div>
 
-      <Footer />
-      
+      <Footer setIsModalOpen={setIsModalOpen} />
+
       {openProfileEditModal && (
         <ProfileUpdateModal
           walletAddress={address}

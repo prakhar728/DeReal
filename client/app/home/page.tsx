@@ -37,15 +37,12 @@ export default function HomePage() {
   const [mounted, setMounted] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [regularPosts, setRegularPosts] = useState<RegularPost[]>([]);
+  const [isLoading, setLoading] = useState(true);
   // const [triggerCapture, setTriggerCapture] = useState(false);
 
-  const {
-    writeContract,
-  } = useWriteContract();
+  const { writeContract } = useWriteContract();
 
-  const {
-    data: posts,
-  } = useReadContract({
+  const { data: posts } = useReadContract({
     abi: CONTRACT_ABI,
     address: contractAddress,
     functionName: "getAllPosts",
@@ -82,15 +79,6 @@ export default function HomePage() {
 
   const interleavedPosts = interleavePosts();
 
-  const postPhotoOnChain = async (cid: string) => {
-    writeContract({
-      abi: CONTRACT_ABI,
-      functionName: "createPost",
-      address: contractAddress,
-      args: [cid],
-    });
-  };
-
   const fetchFromIpfs = async (post: ContractPost) => {
     const res = await (
       await fetch(
@@ -120,11 +108,13 @@ export default function HomePage() {
   useEffect(() => {
     const populateRegularPosts = async (posts: ContractPost[]) => {
       const regularPosts = await Promise.all(posts.map(fetchFromIpfs));
-  
+
       setRegularPosts(regularPosts);
+      setLoading(false);
     };
 
     if (posts && Array.isArray(posts)) {
+      setLoading(true);
       populateRegularPosts(posts);
     }
   }, [posts]);
@@ -147,7 +137,6 @@ export default function HomePage() {
         onClose={() => {
           setIsModalOpen(false);
         }}
-        postPhotoOnChain={postPhotoOnChain}
       />
 
       <main className="container mx-auto px-4">
@@ -156,35 +145,41 @@ export default function HomePage() {
           <p className="text-gray-600">Share your pixelated moments</p>
         </header>
 
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {interleavedPosts.map((post, index) =>
-            "sponsorLink" in post ? (
-              <SponsoredPostCard
-                key={post.id}
-                image={post.image}
-                caption={post.caption}
-                likes={post.likes}
-                sponsorLink={post.sponsorLink}
-                userAddress={post.userAddress}
-                userPfp={post.userPfp}
-              />
-            ) : (
-              <PostCard
-                key={index}
-                image={post.image}
-                image2={post.image2}
-                caption={post.caption}
-                likes={post.likes}
-                userAddress={post.userAddress}
-                hashtags={post.hashtags}
-                userPfp={post.userPfp}
-                timeStamp={post.timeStamp}
-              />
-            )
-          )}
-        </div>
+        {isLoading ? (
+          <h2 className="w-100 text-center"> Digging through the chains to posts for you!</h2>
+        ) : interleavedPosts.length == 0 ? (
+          <h2 className="w-100 text-center">No posts to show yet!</h2>
+        ) : (
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {interleavedPosts.map((post, index) =>
+              "sponsorLink" in post ? (
+                <SponsoredPostCard
+                  key={post.id}
+                  image={post.image}
+                  caption={post.caption}
+                  likes={post.likes}
+                  sponsorLink={post.sponsorLink}
+                  userAddress={post.userAddress}
+                  userPfp={post.userPfp}
+                />
+              ) : (
+                <PostCard
+                  key={index}
+                  image={post.image}
+                  image2={post.image2}
+                  caption={post.caption}
+                  likes={post.likes}
+                  userAddress={post.userAddress}
+                  hashtags={post.hashtags}
+                  userPfp={post.userPfp}
+                  timeStamp={post.timeStamp}
+                />
+              )
+            )}
+          </div>
+        )}
       </main>
-      <Footer />
+      <Footer setIsModalOpen={setIsModalOpen} />
     </div>
   );
 }

@@ -22,7 +22,6 @@ interface SponsoredCardProps {
   sponsorLink: string;
   userPfp: string;
   userAddress: string;
-  hashtags: string[];
 }
 
 export default function SponsoredCard({
@@ -31,8 +30,7 @@ export default function SponsoredCard({
   likes,
   sponsorLink,
   userPfp,
-  userAddress,
-  hashtags,
+  userAddress
 }: SponsoredCardProps) {
   const [mounted, setMounted] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
@@ -107,13 +105,6 @@ export default function SponsoredCard({
           />
           <span className="text-sm">{likeCount}</span>
         </Button>
-        <div className="flex flex-wrap">
-          {hashtags && hashtags.map((tag, index) => (
-            <span key={index} className="mr-2 text-xs text-gray-400">
-              #{tag}
-            </span>
-          ))}
-        </div>
       </CardFooter>
     </Card>
   );
