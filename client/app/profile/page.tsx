@@ -24,6 +24,7 @@ export default function ProfilePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setLoading] = useState(true);
   const [hasTimer, sethasTimer] = useState(false);
+  const [eventId, seteventId] = useState<number>(0);
   const { address } = useAccount();
 
   useEffect(() => {
@@ -107,6 +108,7 @@ export default function ProfilePage() {
           setIsModalOpen(false);
         }}
         hasTimer={hasTimer}
+        eventId={eventId}
       />
       <Card className="mb-8 bg-gray-800 text-gray-200">
         <CardHeader className="flex flex-col items-center space-y-4 sm:flex-row sm:justify-between sm:space-y-0">
@@ -172,7 +174,7 @@ export default function ProfilePage() {
         )}
       </div>
 
-      <Footer setIsModalOpen={setIsModalOpen} sethasTimer={sethasTimer} />
+      <Footer setIsModalOpen={setIsModalOpen} sethasTimer={sethasTimer} setEventId={seteventId}/>
 
 
       {openProfileEditModal && (

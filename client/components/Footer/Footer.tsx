@@ -7,6 +7,7 @@ import { CONTRACT_ABI, DEPLOYED_CONTRACT } from "@/lib/contract";
 interface FooterProps {
   setIsModalOpen: (state: boolean) => void;
   sethasTimer: (state: boolean) => void;
+  setEventId: (state: number) => void;
 }
 
 const contractAddress = DEPLOYED_CONTRACT;
@@ -14,12 +15,16 @@ const contractAddress = DEPLOYED_CONTRACT;
 const Footer: React.FC<FooterProps> = ({
   setIsModalOpen,
   sethasTimer,
+  setEventId
 }: FooterProps) => {
   useWatchContractEvent({
     address: contractAddress,
     abi: CONTRACT_ABI,
     eventName: "EventTriggered",
     onLogs(logs) {
+      if (logs["0"].args)
+        setEventId(parseInt(logs["0"].args.eventId));
+
       setIsModalOpen(true);
       sethasTimer(true);
     },

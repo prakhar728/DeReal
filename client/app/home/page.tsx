@@ -5,7 +5,7 @@ import UploadPhotoModal from "@/components/UploadModal/UploadModal";
 import PostCard from "@/components/PostCard/PostCard";
 import SponsoredPostCard from "@/components/SponsoredCard/SponsoredCard";
 import { CONTRACT_ABI, DEPLOYED_CONTRACT } from "@/lib/contract";
-import { useReadContract, useWriteContract } from "wagmi";
+import { useReadContract } from "wagmi";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 
@@ -39,6 +39,8 @@ export default function HomePage() {
   const [regularPosts, setRegularPosts] = useState<RegularPost[]>([]);
   const [isLoading, setLoading] = useState(true);
   const [hasTimer, sethasTimer] = useState(false);
+  const [eventId, seteventId] = useState<number>(0);
+
   // const [triggerCapture, setTriggerCapture] = useState(false);
 
   const { data: posts } = useReadContract({
@@ -137,6 +139,7 @@ export default function HomePage() {
           setIsModalOpen(false);
         }}
         hasTimer={hasTimer}
+        eventId={eventId}
       />
 
       <main className="container mx-auto px-4">
@@ -182,7 +185,11 @@ export default function HomePage() {
           </div>
         )}
       </main>
-      <Footer setIsModalOpen={setIsModalOpen} sethasTimer={sethasTimer} />
+      <Footer
+        setIsModalOpen={setIsModalOpen}
+        sethasTimer={sethasTimer}
+        setEventId={seteventId}
+      />
     </div>
   );
 }

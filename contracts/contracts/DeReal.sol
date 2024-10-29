@@ -15,13 +15,24 @@ contract DeReal {
         address[] likedBy; // Array of users who liked the post
     }
 
+    struct lastCameraEvent {
+        uint256 timestamp;
+        uint256 eventId;
+    }
+
     mapping(address => User) public users;
     mapping(uint256 => Post) public posts;
     uint256 public postCount;
     uint256 public nextEventTimestamp;
+    uint256 public eventId;
+    lastCameraEvent lastEvent;
 
     event NextEventScheduled(uint256 timestamp);
-    event EventTriggered(address triggeredBy, uint256 timestamp);
+    event EventTriggered(
+        address triggeredBy,
+        uint256 timestamp,
+        uint256 eventId
+    );
     event UserRegistered(address user);
     event UserBioUpdated(address user);
     event PostCreated(address user, uint256 postId);
@@ -61,6 +72,26 @@ contract DeReal {
     }
 
     function createPost(string memory _ipfsHash) public {
+        postCount++;
+        posts[postCount] = Post({
+            user: msg.sender,
+            content: _ipfsHash,
+            timestamp: block.timestamp,
+            likedBy: new address[](0x0)
+        });
+        emit PostCreated(msg.sender, postCount);
+    }
+
+    function createPostDuringEvent(
+        string memory _ipfsHash,
+        uint256 _eventId
+    ) external {
+        require(
+            block.timestamp <= (lastEvent.timestamp + 120),
+            "The time period for event is over"
+        );
+        require(_eventId == lastEvent.eventId, "Not the same event id");
+
         postCount++;
         posts[postCount] = Post({
             user: msg.sender,
@@ -115,6 +146,12 @@ contract DeReal {
     }
 
     function triggerCamera() external {
-        emit EventTriggered(msg.sender, block.timestamp);
+        eventId++;
+        lastEvent = lastCameraEvent({
+            timestamp: block.timestamp,
+            eventId: eventId
+        });
+
+        emit EventTriggered(msg.sender, block.timestamp, eventId);
     }
 }

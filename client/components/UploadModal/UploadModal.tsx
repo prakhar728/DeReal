@@ -13,6 +13,7 @@ interface UploadPhotoModalProps {
   isOpen: boolean;
   onClose: () => void;
   hasTimer: boolean;
+  eventId: number;
 }
 
 const contractAddress = DEPLOYED_CONTRACT;
@@ -21,6 +22,7 @@ const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({
   isOpen,
   onClose,
   hasTimer,
+  eventId,
 }) => {
   const [caption, setCaption] = useState("");
   const [hashtags, setHashtags] = useState("");
@@ -126,12 +128,21 @@ const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({
   };
 
   const postPhotoOnChain = async (cid: string) => {
-    writeContract({
-      abi: CONTRACT_ABI,
-      functionName: "createPost",
-      address: contractAddress,
-      args: [cid],
-    });
+    if (hasTimer) {
+      writeContract({
+        abi: CONTRACT_ABI,
+        functionName: "createPostDuringEvent",
+        address: contractAddress,
+        args: [cid, eventId],
+      });
+    } else {
+      writeContract({
+        abi: CONTRACT_ABI,
+        functionName: "createPost",
+        address: contractAddress,
+        args: [cid],
+      });
+    }
   };
 
   if (!isOpen) return null;
