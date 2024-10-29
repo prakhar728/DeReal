@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Home, Camera, User } from "lucide-react";
 import { Button } from "@/components/ui/button"; // Adjust the path according to your setup
 import { useWatchContractEvent } from "wagmi";
@@ -8,6 +8,12 @@ interface FooterProps {
   setIsModalOpen: (state: boolean) => void;
   sethasTimer: (state: boolean) => void;
   setEventId: (state: number) => void;
+}
+
+type EventLog = {
+  args?: {
+    eventId: string;
+  };
 }
 
 const contractAddress = DEPLOYED_CONTRACT;
@@ -22,14 +28,19 @@ const Footer: React.FC<FooterProps> = ({
     abi: CONTRACT_ABI,
     eventName: "EventTriggered",
     onLogs(logs) {
-      if (logs["0"].args)
-        setEventId(parseInt(logs["0"].args.eventId));
-
+      const currentLog = logs[0] as EventLog;
+      if (currentLog.args?.eventId) {
+        const eventId = parseInt(currentLog.args.eventId, 10);
+        if (!isNaN(eventId)) {
+          setEventId(eventId);
+        }
+      }
+      
       setIsModalOpen(true);
       sethasTimer(true);
     },
   });
-
+  
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-background/10 backdrop-blur-sm">
       <div className="container mx-auto px-4 max-w-lg">

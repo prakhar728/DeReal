@@ -20,7 +20,6 @@ interface SponsoredCardProps {
   caption: string;
   likes: number;
   sponsorLink: string;
-  userPfp: string;
   userAddress: string;
 }
 
@@ -29,7 +28,6 @@ export default function SponsoredCard({
   caption,
   likes,
   sponsorLink,
-  userPfp,
   userAddress
 }: SponsoredCardProps) {
   const [mounted, setMounted] = useState(false);

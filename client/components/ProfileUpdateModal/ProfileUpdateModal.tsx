@@ -8,7 +8,7 @@ import { generateRandomImage } from '@/lib/utils';
 interface ProfileUpdateModalProps {
   walletAddress: string | undefined | `0x${string}`;
   onUpdate: (bio: string) => void;
-  userBio?: any;
+  userBio: string | unknown;
   onClose: () => void;
   isPending: boolean;
 }
@@ -16,11 +16,11 @@ interface ProfileUpdateModalProps {
 const ProfileUpdateModal: React.FC<ProfileUpdateModalProps> = ({
   walletAddress,
   onUpdate,
-  userBio = '',
+  userBio = "",
   onClose,
   isPending
 }) => {
-  const [bio, setBio] = useState(userBio);
+  const [bio, setBio] = useState(typeof(userBio) == "string" ? userBio : "");
   const [error, setError] = useState('');
   const [profileImage, setProfileImage] = useState('');
 
@@ -44,6 +44,8 @@ const ProfileUpdateModal: React.FC<ProfileUpdateModalProps> = ({
     try {
       onUpdate(bio);
     } catch (err) {
+      console.log(err);
+      
       setError('Failed to update profile. Please try again.');
     } finally {
     }

@@ -5,7 +5,9 @@ const pinata = new PinataSDK({
     pinataGateway: process.env.NEXT_PUBLIC_PINATA_GATEWAY,
 });
 
+
 // Function to upload JSON to IPFS
+// eslint-disable-next-line
 export async function uploadJSONToIPFS(jsonData: any) {
     try {
         const result = await pinata.upload.json(jsonData);

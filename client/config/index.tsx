@@ -6,7 +6,7 @@ import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { auroraTestnet } from '@reown/appkit/networks'
 
 // Get projectId from https://cloud.reown.com
-export const projectId = 'c678414ecde341c77bf73aeeaf92b9e2'
+export const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT;
 
 if (!projectId) {
   throw new Error('Project ID is not defined')

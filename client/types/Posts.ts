@@ -3,7 +3,6 @@ interface Post {
     image: string,
     caption: string,
     likes: number,
-    userPfp: string,
     userAddress: string
 }
 

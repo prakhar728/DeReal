@@ -17,7 +17,6 @@ const sponsoredPosts: SponsorPost[] = [
     caption: "Check out our new 8-bit inspired game!",
     likes: 45,
     sponsorLink: "https://example.com/sponsored-game1",
-    userPfp: "",
     userAddress: "0x12312321313134555",
   },
   {
@@ -26,7 +25,6 @@ const sponsoredPosts: SponsorPost[] = [
     caption: "Check out our new co-op game!",
     likes: 45,
     sponsorLink: "https://example.com/sponsored-game1",
-    userPfp: "/dummy-image.jpg",
     userAddress: "0x12312321313134555",
   },
 ];
@@ -166,7 +164,6 @@ export default function HomePage() {
                   likes={post.likes}
                   sponsorLink={post.sponsorLink}
                   userAddress={post.userAddress}
-                  userPfp={post.userPfp}
                 />
               ) : (
                 <PostCard
@@ -177,7 +174,6 @@ export default function HomePage() {
                   likes={post.likes}
                   userAddress={post.userAddress}
                   hashtags={post.hashtags}
-                  userPfp={post.userPfp}
                   timeStamp={post.timeStamp}
                 />
               )

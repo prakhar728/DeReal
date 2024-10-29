@@ -31,7 +31,7 @@ export default function ProfilePage() {
     setMounted(true);
   }, []);
 
-  const { data: userBio, isPending: LoadingBio } = useReadContract({
+  const { data: userBio } = useReadContract({
     abi: CONTRACT_ABI,
     address: contractAddress,
     functionName: "viewBio",
@@ -46,34 +46,34 @@ export default function ProfilePage() {
 
   const { writeContract, isPending } = useWriteContract();
 
-  const fetchFromIpfs = async (post: ContractPost) => {
-    const res = await (
-      await fetch(
-        `https://plum-xerothermic-louse-526.mypinata.cloud/ipfs/${post.content}`
-      )
-    ).json();
-
-    res["userAddress"] = post["user"];
-    res["likes"] = post["likedBy"].length;
-
-    res["timeStamp"] = post["timestamp"];
-    res["image"] = await (
-      await fetch(
-        `https://plum-xerothermic-louse-526.mypinata.cloud/ipfs/${res["0"]}`
-      )
-    ).json();
-
-    if (res["1"])
-      res["image2"] = await (
+  useEffect(() => {
+    const fetchFromIpfs = async (post: ContractPost) => {
+      const res = await (
         await fetch(
-          `https://plum-xerothermic-louse-526.mypinata.cloud/ipfs/${res["1"]}`
+          `https://plum-xerothermic-louse-526.mypinata.cloud/ipfs/${post.content}`
         )
       ).json();
+  
+      res["userAddress"] = post["user"];
+      res["likes"] = post["likedBy"].length;
+  
+      res["timeStamp"] = post["timestamp"];
+      res["image"] = await (
+        await fetch(
+          `https://plum-xerothermic-louse-526.mypinata.cloud/ipfs/${res["0"]}`
+        )
+      ).json();
+  
+      if (res["1"])
+        res["image2"] = await (
+          await fetch(
+            `https://plum-xerothermic-louse-526.mypinata.cloud/ipfs/${res["1"]}`
+          )
+        ).json();
+  
+      if (res["userAddress"] == address) return res;
+    };
 
-    if (res["userAddress"] == address) return res;
-  };
-
-  useEffect(() => {
     const populateRegularPosts = async (posts: ContractPost[]) => {
       const regularPosts = await Promise.all(posts.map(fetchFromIpfs));
 
@@ -84,7 +84,7 @@ export default function ProfilePage() {
     if (posts && Array.isArray(posts)) {
       populateRegularPosts(posts);
     }
-  }, [posts]);
+  }, [posts, address]);
 
   const updateUserProfile = async (bio: string) => {
     console.log(bio);
@@ -167,7 +167,6 @@ export default function ProfilePage() {
               likes={post.likes}
               userAddress={post.userAddress}
               hashtags={post.hashtags}
-              userPfp={post.userPfp}
               timeStamp={post.timeStamp}
             />
           ))

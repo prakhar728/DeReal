@@ -19,7 +19,6 @@ interface PostCardProps {
   image2?: string;
   caption: string;
   likes: number;
-  userPfp: string;
   userAddress: string;
   hashtags: string[];
   timeStamp: bigint;
@@ -30,7 +29,6 @@ export default function PostCard({
   image2,
   caption,
   likes,
-  userPfp,
   userAddress,
   hashtags,
   timeStamp,

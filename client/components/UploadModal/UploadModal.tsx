@@ -33,7 +33,7 @@ const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const webcamRef = useRef<Webcam>(null);
 
-  const { writeContract, data: hash, error } = useWriteContract();
+  const { writeContract, data: hash } = useWriteContract();
 
   // Add transaction receipt hook
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
@@ -97,7 +97,7 @@ const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({
     setIsSubmitting(true);
 
     try {
-      const json: Record<string | number, any> = {};
+      const json: Record<string | number, string | string[]> = {};
 
       const uploadCIDs = await Promise.all(
         capturedImages.map(async (imageData, index) => {
