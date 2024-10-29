@@ -81,6 +81,7 @@ const HomePage: React.FC = () => {
                     height={128}
                     quality={100}
                     className={styles.imageCardImage}
+                    unoptimized
                   />
                   <p className={styles.imageCardText}>{feature.name}</p>
                 </div>
@@ -101,6 +102,7 @@ const HomePage: React.FC = () => {
                   height={64}
                   className={styles.techCardImage}
                   quality={100}
+                  unoptimized
                 />
                 <p className={styles.techCardText}>{tech.name}</p>
               </div>
