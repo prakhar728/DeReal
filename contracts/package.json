@@ -1,7 +1,8 @@
 {
   "name": "hardhat-project",
   "scripts": {
-    "deploy": "npx hardhat ignition deploy ignition/modules/DeReal.js --network testnet_aurora",
+    "deploy-DeReal": "rm -rf ignition/deployments && hardhat ignition deploy ignition/modules/DeReal.js --network testnet_aurora",
+    "deploy-AdContract": "rm -rf ignition/deployments && hardhat ignition deploy ignition/modules/AdContract.js --network testnet_aurora",
     "start": "next start",
     "lint": "next lint"
   },

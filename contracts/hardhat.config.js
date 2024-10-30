@@ -5,21 +5,10 @@ require("dotenv").config(); // Load environment variables
 module.exports = {
   solidity: "0.8.17",
   networks: {
-    sepolia: {
-      url: process.env.SEPOLIA_RPC_URL, // Sepolia RPC URL from .env
-      accounts: [`0x${process.env.PRIVATE_KEY}`], // Private key from .env
-    },
-    opSep : {
-      url: process.env.OP_SEPOLIA,
-      accounts: [`0x${process.env.PRIVATE_KEY}`], // Private key from .env
-    },
     testnet_aurora: {
       url: 'https://testnet.aurora.dev',
       accounts: [`0x${process.env.PRIVATE_KEY}`]
     }
-  },
-  etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY // Etherscan API key from .env
   },
   paths: {
     sources: "./contracts",
