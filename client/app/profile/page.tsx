@@ -62,7 +62,7 @@ export default function ProfilePage() {
         await fetch(
           `https://plum-xerothermic-louse-526.mypinata.cloud/ipfs/${res["0"]}`
         )
-      ).json();
+      ).json(); 
   
       if (res["1"])
         res["image2"] = await (
@@ -75,8 +75,10 @@ export default function ProfilePage() {
     };
 
     const populateRegularPosts = async (posts: ContractPost[]) => {
-      const regularPosts = await Promise.all(posts.map(fetchFromIpfs));
-
+      var regularPosts = await Promise.all(posts.map(fetchFromIpfs));
+      regularPosts = regularPosts.filter(p => p) ;
+      console.log(regularPosts);
+          
       setRegularPosts(regularPosts);
       setLoading(false);
     };
@@ -158,10 +160,11 @@ export default function ProfilePage() {
           <h2> No posts to show yet!</h2>
         ) : (
           regularPosts &&
+          regularPosts.length &&
           regularPosts.map((post, index) => (
             <PostCard
               key={index}
-              image={post.image}
+              image={post.image || ""}
               image2={post.image2}
               caption={post.caption}
               likes={post.likes}

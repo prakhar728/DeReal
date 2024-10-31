@@ -9,23 +9,29 @@ import { useReadContract } from "wagmi";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 
-const sponsoredPosts: SponsorPost[] = [
+var sponsoredPosts: SponsorPost[] = [
   {
-    id: "s1",
-    image:
+    companyName: "Cool games",
+    bannerImage:
       "https://m.media-amazon.com/images/I/81dwDTLOJLL._AC_UF894,1000_QL80_.jpg",
-    caption: "Check out our new 8-bit inspired game!",
-    likes: 45,
-    sponsorLink: "https://example.com/sponsored-game1",
-    userAddress: "0x12312321313134555",
+    websiteLink: "https://example.com/sponsored-game1",
+    adDomain: "games",
+    hashtags: ["game1"],
   },
   {
-    id: "s2",
-    image: "https://www.retrogames.cz/games/022/NES-gameplay.gif",
-    caption: "Check out our new co-op game!",
-    likes: 45,
-    sponsorLink: "https://example.com/sponsored-game1",
-    userAddress: "0x12312321313134555",
+    companyName: "Cool games",
+    bannerImage: "https://www.retrogames.cz/games/022/NES-gameplay.gif",
+    websiteLink: "https://example.com/sponsored-game1",
+    adDomain: "games",
+    hashtags: ["game1"],
+  },
+  {
+    companyName: "Cool games",
+    bannerImage:
+      "https://media.tenor.com/2EYlFh7m2JkAAAAM/minecraft-gameplay.gif",
+    websiteLink: "https://example.com/sponsored-game1",
+    adDomain: "games",
+    hashtags: ["game1"],
   },
 ];
 
@@ -62,14 +68,17 @@ export default function HomePage() {
     let sponsoredIndex = 0;
 
     while (regularIndex < regularPosts.length) {
+      // Add two regular posts if possible
       result.push(regularPosts[regularIndex++]);
       if (regularIndex < regularPosts.length) {
         result.push(regularPosts[regularIndex++]);
       }
 
-      if (sponsoredIndex < sponsoredPosts.length) {
+      // Always try to add a sponsored post
+      if (sponsoredPosts.length > 0) {
+        // Reset sponsoredIndex if we've used all sponsored posts
+        sponsoredIndex = sponsoredIndex % sponsoredPosts.length;
         result.push(getRandomSponsoredPost());
-        sponsoredIndex++;
       }
     }
 
@@ -118,6 +127,22 @@ export default function HomePage() {
     }
   }, [posts]);
 
+  // useEffect(() => {
+  //   const getAds = async () => {
+  //     var ads = await (await fetch(`http://localhost:5000/ads`)).json();
+  //     ads = ads.map(async (ad: SponsorPost) => {
+  //       ad["bannerImage"] = await (
+  //         await fetch(
+  //           `https://plum-xerothermic-louse-526.mypinata.cloud/ipfs/${ad["bannerImage"]}`
+  //         )
+  //       ).json();
+  //     });
+
+  //   };
+
+  //   getAds();
+  // }, []);
+
   // const likePost = (postId: string) => {
   //   console.log(`Dummy likePost function called for post ID: ${postId}`);
   // };
@@ -156,19 +181,19 @@ export default function HomePage() {
         ) : (
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {interleavedPosts.map((post, index) =>
-              "sponsorLink" in post ? (
+              "websiteLink" in post ? (
                 <SponsoredPostCard
                   key={index}
-                  image={post.image}
-                  caption={post.caption}
-                  likes={post.likes}
-                  sponsorLink={post.sponsorLink}
-                  userAddress={post.userAddress}
+                  bannerImage={post.bannerImage}
+                  websiteLink={post.websiteLink}
+                  adDomain={post.adDomain}
+                  hashtags={post.hashtags}
+                  companyName={post.companyName}
                 />
               ) : (
                 <PostCard
                   key={index}
-                  image={post.image}
+                  image={post.image || ""}
                   image2={post.image2}
                   caption={post.caption}
                   likes={post.likes}

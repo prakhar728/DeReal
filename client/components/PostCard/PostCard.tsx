@@ -101,7 +101,7 @@ export default function PostCard({
           {image2 && (
             <div className="absolute right-2.5 top-2.5 w-[30%]">
               <Image
-                src={`data:image/png;base64,${image2}`} 
+                src={`data:image/png;base64,${image}`} 
                 alt="Front Camera"
                 width={120}
                 height={90}

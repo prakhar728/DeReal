@@ -13,8 +13,12 @@ interface RegularPost extends Post {
     timeStamp: bigint,
 }
 
-interface SponsorPost extends Post {
-    sponsorLink: string
+interface SponsorPost {
+    adDomain: string,
+    bannerImage: string,
+    companyName: string,
+    hashtags: string[],
+    websiteLink: string,
 }
 
 interface ContractPost {

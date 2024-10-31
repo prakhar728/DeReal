@@ -10,7 +10,7 @@ const { beginIndexingAdContract } = require("./events/AdContract");
 // Set up provider
 const provider = new ethers.JsonRpcProvider("https://testnet.aurora.dev/");
 
-const DEREAL_CONTRACT = "0x5E181bF9281D9b5FD0Eef90abbA21e50aa71569e";
+const DEREAL_CONTRACT = "0x46a2a933575CBbA90764579DfbD3B89e0e21A49e";
 
 const AD_CONTRACT = "0xfc052abb90F5bD0b0C161105A9E2f9BF933fDFFA";
 

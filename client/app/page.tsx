@@ -49,18 +49,27 @@ const HomePage: React.FC = () => {
           <h2 className={styles.sectionTitle}>
             Ready for spontaneous sharing?
           </h2>
-          <button className={styles.ctaButton}>
-            <Link href="/home" className="flex items-center">
-              Go to App
-              <Image
-                src="/8-bit-right-arrow.gif"
-                alt="right-arrow"
-                width={24}
-                height={24}
-                className={styles.rightArrow}
-              />
-            </Link>
-          </button>
+          <div className="flex flex-col md:flex-row md:justify-between w-full md:w-[50vw]">
+            <button className={styles.ctaButton}>
+              <Link href="/home" className="flex items-center">
+                Go to App
+                <Image
+                  src="/8-bit-right-arrow.gif"
+                  alt="right-arrow"
+                  width={24}
+                  height={24}
+                  className={styles.rightArrow}
+                />
+              </Link>
+            </button>
+
+            <button className={styles.ctaButton}>
+              <Link href="/ads/create" className="flex items-center">
+                Banner Ads?
+              </Link>
+            </button>
+          </div>
+
           <div className={styles.userCount}>
             Users De Realed: {userCount.toLocaleString()}
           </div>

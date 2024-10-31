@@ -15,8 +15,6 @@ async function beginIndexingAdContract(provider, contract, db, iface) {
       )
     ).json();
 
-    console.log(adDetails);
-
     const log = {
       transcationHash: event.log.transactionHash,
       blockNumber: event.log.blockNumber,

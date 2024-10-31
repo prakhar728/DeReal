@@ -48,6 +48,8 @@ const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({
         setTimeLeft((prevTime) => prevTime - 1);
       }, 1000);
     } else if (timeLeft === 0 && hasTimer) {
+      console.log("What happened?");
+      
       onClose();
     }
     return () => clearInterval(timer);
