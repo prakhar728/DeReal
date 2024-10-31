@@ -66,6 +66,7 @@ export default function CreateAdPage() {
   const [hasTimer, sethasTimer] = useState(false);
   const [eventId, seteventId] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [imageFile, setimageFile] = useState("");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -92,7 +93,17 @@ export default function CreateAdPage() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const cid = await uploadJSONToIPFS(values);
+
+    const data = {
+      companyName: values["companyName"],
+      adDomain: values["adDomain"],
+      hashtags: values["hashtags"],
+      websiteLink: values["websiteLink"],
+      bannerImage: imageFile,
+      paymentMode: values["paymentMode"],
+    }
+    
+    const cid = await uploadJSONToIPFS(data);
     writeContract({
       abi: AD_CONTRACT_ABI,
       functionName: "submitAd",
@@ -217,10 +228,17 @@ export default function CreateAdPage() {
                         accept="image/*"
                         onChange={(e) => {
                           const file = e.target.files?.[0];
+
                           if (file) {
                             onChange(file);
                             const reader = new FileReader();
-                            reader.onloadend = () => {
+                            reader.onloadend = async () => {
+                              const [, imageContent] = (
+                                reader.result as string
+                              ).split(",");
+                              const cid = await uploadJSONToIPFS(imageContent);
+                              setimageFile(cid.IpfsHash);
+
                               setPreviewImage(reader.result as string);
                             };
                             reader.readAsDataURL(file);

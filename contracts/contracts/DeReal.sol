@@ -13,6 +13,7 @@ contract DeReal {
         string content;
         uint256 timestamp;
         address[] likedBy; // Array of users who liked the post
+        bool isEventPost; // Flag to indicate if the post is created during an event
     }
 
     struct lastCameraEvent {
@@ -35,7 +36,7 @@ contract DeReal {
     );
     event UserRegistered(address user);
     event UserBioUpdated(address user);
-    event PostCreated(address user, uint256 postId);
+    event PostCreated(address user, uint256 postId, bool isEventPost);
     event LikeToggled(address user, uint256 postId, bool isLiked);
     event CamerasTriggered(address triggeredBy, uint256 timestamp);
 
@@ -77,9 +78,10 @@ contract DeReal {
             user: msg.sender,
             content: _ipfsHash,
             timestamp: block.timestamp,
-            likedBy: new address[](0x0)
+            likedBy: new address[](0x0),
+            isEventPost: false
         });
-        emit PostCreated(msg.sender, postCount);
+        emit PostCreated(msg.sender, postCount, false);
     }
 
     function createPostDuringEvent(
@@ -97,9 +99,10 @@ contract DeReal {
             user: msg.sender,
             content: _ipfsHash,
             timestamp: block.timestamp,
-            likedBy: new address[](0x0)
+            likedBy: new address[](0x0),
+            isEventPost: true
         });
-        emit PostCreated(msg.sender, postCount);
+        emit PostCreated(msg.sender, postCount, true);
     }
 
     function likePost(uint256 _postId) public {
