@@ -15,6 +15,7 @@ var sponsoredPosts: SponsorPost[] = [
     bannerImage:
       "https://m.media-amazon.com/images/I/81dwDTLOJLL._AC_UF894,1000_QL80_.jpg",
     websiteLink: "https://example.com/sponsored-game1",
+    description: " A apt description",
     adDomain: "games",
     hashtags: ["game1"],
   },
@@ -22,6 +23,7 @@ var sponsoredPosts: SponsorPost[] = [
     companyName: "Cool games",
     bannerImage: "https://www.retrogames.cz/games/022/NES-gameplay.gif",
     websiteLink: "https://example.com/sponsored-game1",
+    description: " A apt description",
     adDomain: "games",
     hashtags: ["game1"],
   },
@@ -30,6 +32,7 @@ var sponsoredPosts: SponsorPost[] = [
     bannerImage:
       "https://media.tenor.com/2EYlFh7m2JkAAAAM/minecraft-gameplay.gif",
     websiteLink: "https://example.com/sponsored-game1",
+    description: " A apt description",
     adDomain: "games",
     hashtags: ["game1"],
   },
@@ -177,6 +180,7 @@ export default function HomePage() {
                   bannerImage={post.bannerImage}
                   websiteLink={post.websiteLink}
                   adDomain={post.adDomain}
+                  description={post.description}
                   hashtags={post.hashtags}
                   companyName={post.companyName}
                 />

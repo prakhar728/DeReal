@@ -18,6 +18,7 @@ interface SponsorPost {
     companyName: string,
     hashtags: string[],
     websiteLink: string,
+    description: string
 }
 
 interface ContractPost {

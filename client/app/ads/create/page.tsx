@@ -48,6 +48,9 @@ const formSchema = z.object({
   adDomain: z.string({
     message: "Please enter a valid string.",
   }),
+  description: z.string({
+    message: "Please enter a valid string.",
+  }),
   hashtags: z.string().refine((value) => value.split(",").length <= 5, {
     message: "Please enter up to 5 hashtags, separated by commas.",
   }),
@@ -75,6 +78,7 @@ export default function CreateAdPage() {
       adDomain: "",
       hashtags: "",
       websiteLink: "",
+      description: "",
       paymentMode: "pay-once",
     },
   });
@@ -99,6 +103,7 @@ export default function CreateAdPage() {
       adDomain: values["adDomain"],
       hashtags: values["hashtags"],
       websiteLink: values["websiteLink"],
+      description: values["description"],
       bannerImage: imageFile,
       paymentMode: values["paymentMode"],
     }
@@ -180,6 +185,22 @@ export default function CreateAdPage() {
                         {...field}
                       />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Ad Description</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Brief description of your ad (max 100 characters)" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Provide a short, catchy description for your ad.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

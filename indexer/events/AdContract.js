@@ -19,6 +19,7 @@ async function beginIndexingAdContract(provider, contract, db, iface) {
       transcationHash: event.log.transactionHash,
       blockNumber: event.log.blockNumber,
       companyName: adDetails.companyName,
+      description: adDetails.description,
       adDomain: adDetails.adDomain,
       hashtags: adDetails.hashtags,
       websiteLink: adDetails.websiteLink,
