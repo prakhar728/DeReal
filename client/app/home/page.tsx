@@ -45,17 +45,11 @@ export default function HomePage() {
   const [hasTimer, sethasTimer] = useState(false);
   const [eventId, seteventId] = useState<number>(0);
 
-  // const [triggerCapture, setTriggerCapture] = useState(false);
-
   const { data: posts } = useReadContract({
     abi: CONTRACT_ABI,
     address: contractAddress,
     functionName: "getAllPosts",
   });
-
-  // useEffect(() => {
-  //   if (triggerCapture) setIsModalOpen(true);
-  // }, [triggerCapture]);
 
   const getRandomSponsoredPost = () => {
     const randomIndex = Math.floor(Math.random() * sponsoredPosts.length);
@@ -68,15 +62,12 @@ export default function HomePage() {
     let sponsoredIndex = 0;
 
     while (regularIndex < regularPosts.length) {
-      // Add two regular posts if possible
       result.push(regularPosts[regularIndex++]);
       if (regularIndex < regularPosts.length) {
         result.push(regularPosts[regularIndex++]);
       }
 
-      // Always try to add a sponsored post
       if (sponsoredPosts.length > 0) {
-        // Reset sponsoredIndex if we've used all sponsored posts
         sponsoredIndex = sponsoredIndex % sponsoredPosts.length;
         result.push(getRandomSponsoredPost());
       }
@@ -87,14 +78,16 @@ export default function HomePage() {
 
   const interleavedPosts = interleavePosts();
 
-  const fetchFromIpfs = async (post: ContractPost) => {
+  const fetchFromIpfs = async (post: ContractPost, index: number) => {
     const res = await (
       await fetch(
         `https://plum-xerothermic-louse-526.mypinata.cloud/ipfs/${post.content}`
       )
     ).json();
 
+    res["postId"] = index + 1;
     res["userAddress"] = post["user"];
+    res["likedBy"] = post["likedBy"];
     res["likes"] = post["likedBy"].length;
     res["timeStamp"] = post["timestamp"];
     res["image"] = await (
@@ -143,9 +136,6 @@ export default function HomePage() {
   //   getAds();
   // }, []);
 
-  // const likePost = (postId: string) => {
-  //   console.log(`Dummy likePost function called for post ID: ${postId}`);
-  // };
 
   useEffect(() => {
     setMounted(true);
@@ -193,10 +183,12 @@ export default function HomePage() {
               ) : (
                 <PostCard
                   key={index}
+                  postId={post.postId}
                   image={post.image || ""}
                   image2={post.image2}
                   caption={post.caption}
                   likes={post.likes}
+                  likedBy={post.likedBy}
                   userAddress={post.userAddress}
                   hashtags={post.hashtags}
                   timeStamp={post.timeStamp}

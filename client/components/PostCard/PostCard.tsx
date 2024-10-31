@@ -13,22 +13,34 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { bigintToTimestamp, generateRandomImage } from "@/lib/utils";
+import { CONTRACT_ABI, DEPLOYED_CONTRACT } from "@/lib/contract";
+import {
+  useAccount,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
 
 interface PostCardProps {
+  postId: number;
   image: string;
   image2?: string;
   caption: string;
   likes: number;
+  likedBy: string[];
   userAddress: string;
   hashtags: string[];
   timeStamp: bigint;
 }
 
+const contractAddress = DEPLOYED_CONTRACT;
+
 export default function PostCard({
+  postId,
   image,
   image2,
   caption,
   likes,
+  likedBy,
   userAddress,
   hashtags,
   timeStamp,
@@ -36,11 +48,24 @@ export default function PostCard({
   const [mounted, setmounted] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(likes);
+  const { address } = useAccount();
+  const { writeContract, data: hash, error } = useWriteContract();
+
+  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+    hash,
+  });
 
   const handleLike = () => {
-    setIsLiked((prev) => !prev);
-    setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
+    console.log(postId);
+
+    writeContract({
+      abi: CONTRACT_ABI,
+      functionName: "likePost",
+      address: contractAddress,
+      args: [postId],
+    });
   };
+  console.log(error);
 
   const shortenAddress = (address: string) => {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -63,6 +88,19 @@ export default function PostCard({
     setmounted(true);
   }, []);
 
+  useEffect(() => {
+    if (isSuccess) {
+      setIsLiked((prev) => !prev);
+      setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (likedBy && likedBy.length && address) {
+      setIsLiked(likedBy.includes(address));
+    }
+  }, [likedBy]);
+
   if (!mounted) return null;
   return (
     <Card className="mb-5 bg-gray-800 shadow-md">
@@ -79,7 +117,7 @@ export default function PostCard({
             {shortenAddress(userAddress)}
           </span>
         </div>
-        
+
         <div className="flex items-center">
           <span className="text-xs text-gray-400">
             {formatRelativeTime(timeStamp)}
@@ -101,7 +139,7 @@ export default function PostCard({
           {image2 && (
             <div className="absolute right-2.5 top-2.5 w-[30%]">
               <Image
-                src={`data:image/png;base64,${image}`} 
+                src={`data:image/png;base64,${image}`}
                 alt="Front Camera"
                 width={120}
                 height={90}
@@ -120,7 +158,7 @@ export default function PostCard({
           onClick={handleLike}
         >
           <Heart
-            className={`h-5 w-5 ${isLiked ? "fill-primary text-primary" : ""}`}
+            className={`h-5 w-5 ${isLiked ? "fill-primary text-red-800" : ""}`}
           />
           <span className="text-sm">{likeCount}</span>
         </Button>

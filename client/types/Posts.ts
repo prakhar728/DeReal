@@ -1,12 +1,11 @@
-interface Post {
+interface RegularPost  {
     id: string,
     image: string,
     caption: string,
     likes: number,
+    likedBy: string[],
     userAddress: string
-}
-
-interface RegularPost extends Post {
+    postId: number,
     index: number,
     image2: string,
     hashtags : string[],
