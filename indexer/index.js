@@ -9,7 +9,7 @@ const AD_CONTRACT_JSON = require("./contracts/AdContract.json");
 require("dotenv").config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 // Set up provider and constants from environment variables
 const PROVIDER_URL = process.env.PROVIDER_URL || "https://testnet.aurora.dev/";
