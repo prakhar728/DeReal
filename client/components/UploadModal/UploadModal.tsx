@@ -8,6 +8,7 @@ import { uploadJSONToIPFS } from "@/lib/ipfs";
 import styles from "./UploadModal.module.css";
 import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { CONTRACT_ABI, DEPLOYED_CONTRACT } from "@/lib/contract";
+import { toast } from "@/hooks/use-toast";
 
 interface UploadPhotoModalProps {
   isOpen: boolean;
@@ -33,23 +34,21 @@ const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const webcamRef = useRef<Webcam>(null);
 
-  const { writeContract, data: hash } = useWriteContract();
+  const { writeContract, data: hash, error: writeContractError } = useWriteContract();
 
   // Add transaction receipt hook
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+  const { isLoading: isConfirming, isSuccess, error } = useWaitForTransactionReceipt({
     hash,
   });
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
     // Only countdown if modal is open and we're not submitting/confirming
-    if (isOpen && timeLeft > 0 && !isSubmitting && !isConfirming && hasTimer) {
+    if (isOpen && timeLeft >= 0 && !isSubmitting && !isConfirming && hasTimer) {
       timer = setInterval(() => {
         setTimeLeft((prevTime) => prevTime - 1);
       }, 1000);
-    } else if (timeLeft === 0 && hasTimer) {
-      console.log("What happened?");
-      
+    } else if (timeLeft === -1 && hasTimer) {
       onClose();
     }
     return () => clearInterval(timer);
@@ -78,20 +77,31 @@ const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({
     setCapturing(true);
     const images: string[] = [];
 
-    // Capture from the front camera
+    try {
+      // Capture from the front camera
     setFacingMode("user");
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     const imageSrc = webcamRef.current?.getScreenshot();
     if (imageSrc) images.push(imageSrc);
 
     // Capture from the back camera
     setFacingMode("environment");
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     const backImageSrc = webcamRef.current?.getScreenshot();
     if (backImageSrc) images.push(backImageSrc);
 
     setCapturedImages(images);
     setCapturing(false);
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Error",
+        description: `There was an error creating your ad. Please try again.${error}`,
+        variant: "destructive",
+      });
+      
+    }
+    
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -147,6 +157,19 @@ const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({
     }
   };
 
+  useEffect(() => {
+    if (error || writeContractError)
+      toast({
+        title: "Error",
+        description: `There was an error creating your ad. Please try again.${error || writeContractError}`,
+        variant: "destructive",
+      });
+
+      console.log(error || writeContractError);
+      
+  }, [error, writeContractError])
+  
+
   if (!isOpen) return null;
 
   const isDisabled = isSubmitting || isConfirming;
@@ -155,6 +178,7 @@ const UploadPhotoModal: React.FC<UploadPhotoModalProps> = ({
     : isSubmitting
     ? "Posting..."
     : "Post";
+
 
   return (
     <div className={styles.modalOverlay}>

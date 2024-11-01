@@ -9,7 +9,7 @@ import { useReadContract } from "wagmi";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 
-var sponsoredPosts: SponsorPost[] = [
+var demoPosts: SponsorPost[] = [
   {
     companyName: "Cool games",
     bannerImage:
@@ -44,6 +44,7 @@ export default function HomePage() {
   const [mounted, setMounted] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [regularPosts, setRegularPosts] = useState<RegularPost[]>([]);
+  const [sponsoredPosts, setsponsoredposts] = useState<SponsorPost[]>([])
   const [isLoading, setLoading] = useState(true);
   const [hasTimer, sethasTimer] = useState(false);
   const [eventId, seteventId] = useState<number>(0);
@@ -123,22 +124,33 @@ export default function HomePage() {
     }
   }, [posts]);
 
-  // useEffect(() => {
-  //   const getAds = async () => {
-  //     var ads = await (await fetch(`http://localhost:5000/ads`)).json();
-  //     ads = ads.map(async (ad: SponsorPost) => {
-  //       ad["bannerImage"] = await (
-  //         await fetch(
-  //           `https://plum-xerothermic-louse-526.mypinata.cloud/ipfs/${ad["bannerImage"]}`
-  //         )
-  //       ).json();
-  //     });
+  useEffect(() => {
+    const getAds = async () => {
+      var ads = await (await fetch(`http://localhost:5000/ads`)).json();
+      ads = await Promise.all(
+        ads.map(async (ad: SponsorPost) => {
+          if (ad["bannerImage"]) {
+            const response = await (
+              await fetch(
+                `https://plum-xerothermic-louse-526.mypinata.cloud/ipfs/${ad["bannerImage"]}`
+              )
+            ).json();
 
-  //   };
+            ad["bannerImage"] = response;
+          }
+          return ad;
+        })
+      );
 
-  //   getAds();
-  // }, []);
+      console.log(ads);
+    
+      setsponsoredposts( (ads && ads.length == 0) ? demoPosts : ads  )
 
+      console.log(sponsoredPosts);
+    };
+
+    getAds();
+  }, []);
 
   useEffect(() => {
     setMounted(true);

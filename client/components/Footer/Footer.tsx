@@ -33,11 +33,11 @@ const Footer: React.FC<FooterProps> = ({
         const eventId = parseInt(currentLog.args.eventId, 10);
         if (!isNaN(eventId)) {
           setEventId(eventId);
+          sethasTimer(true);
         }
       }
 
       setIsModalOpen(true);
-      sethasTimer(true);
     },
   });
 
