@@ -3,7 +3,7 @@ import AdContract from '../contracts/AdContract.json';
 
 export const DEPLOYED_CONTRACT = '0x46a2a933575CBbA90764579DfbD3B89e0e21A49e';
 
-export const AD_CONTRACT = '0xfc052abb90F5bD0b0C161105A9E2f9BF933fDFFA';
+export const AD_CONTRACT = '0x39C2DB72cCB9887E6712f0125730733F391BC3A7';
 
 export const CONTRACT_ABI = DeRealContract.abi;
 

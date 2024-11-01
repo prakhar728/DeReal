@@ -40,6 +40,8 @@ var demoPosts: SponsorPost[] = [
 
 const contractAddress = DEPLOYED_CONTRACT;
 
+const server_uri = process.env.NEXT_PUBLIC_BACKEND_SERVER;
+
 export default function HomePage() {
   const [mounted, setMounted] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -126,7 +128,7 @@ export default function HomePage() {
 
   useEffect(() => {
     const getAds = async () => {
-      var ads = await (await fetch(`http://localhost:5000/ads`)).json();
+      var ads = await (await fetch(`${server_uri}/ads`)).json();
       ads = await Promise.all(
         ads.map(async (ad: SponsorPost) => {
           if (ad["bannerImage"]) {

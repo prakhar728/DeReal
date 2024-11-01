@@ -101,7 +101,7 @@ export default function CreateAdPage() {
     const data = {
       companyName: values["companyName"],
       adDomain: values["adDomain"],
-      hashtags: values["hashtags"],
+      hashtags: values["hashtags"].split(","),
       websiteLink: values["websiteLink"],
       description: values["description"],
       bannerImage: imageFile,

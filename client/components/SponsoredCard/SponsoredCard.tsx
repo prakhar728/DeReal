@@ -81,7 +81,7 @@ export default function SponsoredCard({
       <CardContent className="p-3">
         <div className="relative mb-3 w-full">
           <Image
-            src={bannerImage}
+            src={`data:image/png;base64,${bannerImage}`}
             alt="Sponsored image"
             width={400}
             height={300}
