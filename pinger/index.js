@@ -54,6 +54,11 @@ function scheduleNextEvent() {
   }, delay);
 }
 
+// Health check route to keep the server active
+app.get("/health", (req, res) => {
+  res.status(200).send("Server is up and running.");
+});
+
 // Start the server and initialize perpetual scheduling
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

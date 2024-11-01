@@ -19,6 +19,10 @@ async function connectToDB() {
 }
 
 // Connect to MongoDB and fetch all data from a collection
+app.get("/", (req, res) => {
+  res.status(200).send("Healthy");
+})
+
 app.get("/ads", async (req, res) => {
   try {
   await connectToDB();
