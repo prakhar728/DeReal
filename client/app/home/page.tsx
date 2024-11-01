@@ -9,7 +9,7 @@ import { useReadContract } from "wagmi";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 
-var demoPosts: SponsorPost[] = [
+const demoPosts: SponsorPost[] = [
   {
     companyName: "Cool games",
     bannerImage:
@@ -128,7 +128,7 @@ export default function HomePage() {
 
   useEffect(() => {
     const getAds = async () => {
-      var ads = await (await fetch(`${server_uri}/ads`)).json();
+      let ads = await (await fetch(`${server_uri}/ads`)).json();
       ads = await Promise.all(
         ads.map(async (ad: SponsorPost) => {
           if (ad["bannerImage"]) {

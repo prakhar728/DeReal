@@ -76,7 +76,7 @@ export default function ProfilePage() {
     };
 
     const populateRegularPosts = async (posts: ContractPost[]) => {
-      var regularPosts = await Promise.all(posts.map(fetchFromIpfs));
+      let regularPosts = await Promise.all(posts.map(fetchFromIpfs));
       regularPosts = regularPosts.filter((p) => p);
       console.log(regularPosts);
 

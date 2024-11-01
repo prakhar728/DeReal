@@ -49,9 +49,9 @@ export default function PostCard({
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(likes);
   const { address } = useAccount();
-  const { writeContract, data: hash, error } = useWriteContract();
+  const { writeContract, data: hash } = useWriteContract();
 
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+  const { isSuccess } = useWaitForTransactionReceipt({
     hash,
   });
 

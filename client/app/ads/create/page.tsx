@@ -85,7 +85,7 @@ export default function CreateAdPage() {
 
   const { writeContract, data: hash, error } = useWriteContract();
 
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+  const { isSuccess } = useWaitForTransactionReceipt({
     hash,
   });
 
@@ -237,6 +237,7 @@ export default function CreateAdPage() {
                   </FormItem>
                 )}
               />
+              
               <FormField
                 control={form.control}
                 name="bannerImage"
